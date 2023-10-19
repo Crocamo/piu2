@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-center">
+
+    <div class="card mt-3 text-dark text-center" style="width: 600px;">
+        
+        <div class="card-header">
+            <h1>{{title}}</h1>
+        </div>
+        <div class="form-group">
+            {{perfilLink}}
+        </div>
+        <div class="card-body">
+
+            {{status}}
+            
+            <form method="post">
+
+                <div class="form-group">
+                    <label>Função Profissional</label>
+                    <input type="text" name="FuncaoProfissional" class="form-control" placeholder="Ex: Cabeleireiro" value="{{FuncaoProfissional}}" required autofocus>
+                        
+                </div>
+
+                <div class="form-group my-2">
+                    <label>Horarios de atendimento</label>
+                    {{horarios}}
+                </div>
+
+                <div class="form-group my-2">
+                    <div class="row Feriados">
+                        <label>Trabalha em Feriados? Marcar campos se positivo</label>
+                        <div class="form-check col feriadoNacio">
+                            <input class="form-check-input" type="checkbox" name="feriadoNacio" value="1" id="feriadoNacio">
+                            <label class="form-check-label" for="defaultCheck1">Feriado Nacional</label>
+                        </div>
+
+                        <div class="form-check col feriadoEstad">
+                            <input class="form-check-input" type="checkbox" name="feriadoEstad" value="1" id="feriadoEstad">
+                            <label class="form-check-label" for="defaultCheck1">Feriado Nacional</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-lg btn-danger">Salvar</button>
+
+            </form>
+        </div>
+    </div>
+    
+</div>
