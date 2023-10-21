@@ -1,0 +1,40 @@
+<h1>{{title}}</h1>
+
+<hr>
+
+<a href="{{URL}}/user/servicos">
+    <button type="button" class="btn btn-warning">Voltar</button>
+</a>
+
+<hr>
+
+{{status}}
+
+<form method="post">
+    <div class="row my-1">
+        <div class="form-group col">
+            <label>Nome do Serviço</label>
+            <input type="text" name="nomeServ" class="form-control" value="{{nomeServ}}" required>
+        </div>
+        <div class="form-group col">
+            <label>Tempo Médio do Serviço</label>
+            <select class="form-control" id="tempoMedioServ" name="tempoMedioServ">
+                {{tempoMedioServ}}
+            </select>
+        </div>
+        <div class="form-group col">
+            <label>Valor do Serviço</label>
+            <input type="number" name="valorServ" class="form-control" value="{{valorServ}}" required>
+        </div>
+        <div class="form-group col">
+            <label>Status</label>
+            <select class="form-control" id="status" name="status">
+                <option value="0" name="Ativo" selected>Ativo</option>
+                <option value="1" name="Suspenso" >Suspenso</option>
+            </select>
+        </div>
+        <div class="form-group col">
+            <button type="submit" class="btn btn-success">Enviar</button>
+        </div>
+    </div>
+</form>

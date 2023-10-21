@@ -4,7 +4,7 @@ namespace App\Controller\User;
 
 use \App\Utils\View;
 use \App\model\Entity\User;
-use \App\model\Entity\profissional;
+use \App\model\Entity\Profissional;
 use \App\model\Entity\Horarios;
 
 class Cadastro extends Page
@@ -54,16 +54,16 @@ class Cadastro extends Page
         $login          = $postVars['login'] ?? '';
         $endereco       = $postVars['endereco'] ?? '';
         $numero         = $postVars['numero'] ?? '';
-        $cep            = $postVars['cep'] ?? '';
-        $telefone       = $postVars['telefone'] ?? '';
-        $cpf            = $postVars['cpf'] ?? '';
+        $CEP            = $postVars['cep'] ?? '';
+        $tel            = $postVars['telefone'] ?? '';
+        $doc            = $postVars['cpf'] ?? '';
         $tipoConta      = $postVars['tipoConta'] ?? '';
         $sexo           = $postVars['sexo'] ?? '';
 
         //SERIALIZA OS DADOS        
-        $cpf = self::removeSpecialCaracter($cpf);
-        $telefone = self::removeSpecialCaracter($telefone);
-        $cep = self::removeSpecialCaracter($cep);
+        $cpf = self::removeSpecialCaracter($doc);
+        $telefone = self::removeSpecialCaracter($tel);
+        $cep = self::removeSpecialCaracter($CEP);
 
         //VALIDA QTD DE CARACTERES DO TELEFONE DO USUÁRIO
         if (strlen($telefone) <= 7) {
@@ -82,8 +82,14 @@ class Cadastro extends Page
 
         //VALIDA QTD DE CARACTERES DO CEP DO USUÁRIO
         if (strlen($cep) != 8) {
-            //REDIRECIONA O USUÁRIO
-            $request->getRouter()->redirect('/cadastro?status=cepLeng');
+
+            if (substr($CEP, 0, 1) != substr($cep, 0, 1) && strlen($cep) == 7) {
+
+                $cep = substr($CEP, 0, 1) . $cep;
+            } else {
+                //REDIRECIONA O USUÁRIO
+                $request->getRouter()->redirect('/cadastro?status=cepLeng');
+            }
         }
 
         //VALIDA O E-MAIL DO USUÁRIO
@@ -156,7 +162,7 @@ class Cadastro extends Page
     {
         //POST VARS
         $postVars = $request->getPostVars();
-        
+
         $seg[0]   = $postVars['segIni'] ?? '';
         $seg[1]   = $postVars['segIda'] ?? '';
         $seg[2]   = $postVars['segVol'] ?? '';
@@ -196,41 +202,41 @@ class Cadastro extends Page
         $feriadoNacio  = ($postVars['feriadoNacio'] ?? '0');
         $feriadoEstad  = $postVars['feriadoEstad'] ?? '0';
 
-        $segunda=self::timeCombine($seg);
-        $terca  =self::timeCombine($ter);
-        $quarta =self::timeCombine($qua);
-        $quinta =self::timeCombine($qui);
-        $sexta  =self::timeCombine($sex);
-        $sabado =self::timeCombine($sab);
-        $domingo=self::timeCombine($dom);
+        $segunda = self::timeCombine($seg);
+        $terca  = self::timeCombine($ter);
+        $quarta = self::timeCombine($qua);
+        $quinta = self::timeCombine($qui);
+        $sexta  = self::timeCombine($sex);
+        $sabado = self::timeCombine($sab);
+        $domingo = self::timeCombine($dom);
 
-        $idUser=$_SESSION['user']['usuario']['id'];
+        $idUser = $_SESSION['user']['usuario']['id'];
 
         $obProfi = Profissional::getUserPById($idUser);
-        
+
         //VALIDA SE USUARIO É PROFISSIONAL CADASTRADO
         if (!$obProfi instanceof Profissional) {
             //SALVA HORARIOS DE TRABALHO DO PROFISSIONAL
             $obHorario          = new Horarios;
-            $obHorario->segunda =$segunda;
-            $obHorario->terca   =$terca;
-            $obHorario->quarta  =$quarta;
-            $obHorario->quinta  =$quinta;
-            $obHorario->sexta   =$sexta;
-            $obHorario->sabado  =$sabado;
-            $obHorario->domingo =$domingo;
-            $obHorario->feriadoEstadual  =$feriadoNacio;
-            $obHorario->feriadoNacional  =$feriadoEstad;
+            $obHorario->segunda = $segunda;
+            $obHorario->terca   = $terca;
+            $obHorario->quarta  = $quarta;
+            $obHorario->quinta  = $quinta;
+            $obHorario->sexta   = $sexta;
+            $obHorario->sabado  = $sabado;
+            $obHorario->domingo = $domingo;
+            $obHorario->feriadoEstadual  = $feriadoNacio;
+            $obHorario->feriadoNacional  = $feriadoEstad;
             $obHorario->cadastrar();
 
             // SALVA OS DADOS DO PROFISSIONAL
             $obProfi                = new profissional;
-            $obProfi->idUser        =$idUser;
-            $obProfi->idHorarios    =$obHorario->idHorarios;
-            $obProfi->funcaoProfissional=$funcao;
+            $obProfi->idUser        = $idUser;
+            $obProfi->idHorarios    = $obHorario->idHorarios;
+            $obProfi->funcaoProfissional = $funcao;
             $obProfi->cadastrar();
             //REDIRECIONA O USUÁRIO
-            $request->getRouter()->redirect('/cadastroProfissional?status=workCreated');
+            $request->getRouter()->redirect('/user');
         } else {
             //REDIRECIONA O USUÁRIO
             $request->getRouter()->redirect('/cadastro?status=error');
@@ -242,10 +248,11 @@ class Cadastro extends Page
      * @param Array $array
      * @return String
      */
-    private static function timeCombine($array){
-        $horarios ='';
+    private static function timeCombine($array)
+    {
+        $horarios = '';
         for ($d = 0; $d < 4; $d++) {
-            $horarios .=$array[$d].'/$/';
+            $horarios .= $array[$d] . '/$/';
         }
         return $horarios;
     }
@@ -334,7 +341,7 @@ class Cadastro extends Page
      * @param string $numero
      * @return int
      */
-    private static function removeSpecialCaracter($numero)
+    private static function removeSpecialCaracter($numero): int
     {
         return preg_replace('/[^0-9]/', '', $numero);
     }

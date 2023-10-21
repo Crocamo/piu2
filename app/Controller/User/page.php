@@ -58,6 +58,10 @@ class Page
         'perfil' => [
             'label' =>  'perfil de usuario',
             'link'  =>  URL . '/user/perfil'
+        ],
+        'servicos' => [
+            'label' =>  'área Serviços',
+            'link'  =>  URL . '/user/servicos'
         ]
     ];
 

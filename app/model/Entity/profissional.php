@@ -53,7 +53,6 @@ class Profissional{
      */
     public function atualizar(){
         return (new Database('tbprofissional'))->update('idProfissional = '.$this->idProfissional,[
-            'idProfissional'    => $this->idProfissional,
             'idUser'            => $this->idUser,
             'idHorarios'        => $this->idHorarios,
             'funcaoProfissional'=> $this->funcaoProfissional

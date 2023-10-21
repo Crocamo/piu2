@@ -1,0 +1,29 @@
+<h1>Serviços Prestados</h1>
+<p>Área de administração de serviços. </p>
+
+<hr>
+
+<a href="{{URL}}/user/servicos/new">
+    <button type="button" class="btn btn-success">Cadastrar Novo Serviço</button>
+</a>
+
+<hr>
+
+{{status}}
+
+<table class="table table-light table-striped">
+    <thead>
+        <tr>
+            <th style="width: 200px;">Nome do Serviço</th>
+            <th>tempo Aproximado</th>
+            <th>Valor Aproximado</th>
+            <th>Status do serviço</th>
+            <th>Data de criação do serviço</th>
+            <th style="width: 200px;">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{itens}}
+    </tbody>
+</table>
+{{pagination}}

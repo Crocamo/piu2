@@ -25,34 +25,22 @@ class User{
     public $email;
 
     /**
-     * Senha do usuário
-     * @var String
-     */
-    public $senha;
-
-    /**
-     * Login do usuário
-     * @var String
-     */
-    public $login;
-
-    /**
      * Endereço do usuário
      * @var String
      */
     public $endereco;
 
     /**
-     * Numero do endereço do usuário
-     * @var interger
-     */
-    public $numero;
-
-    /**
      * CEP do usuário
      * @var interger
      */
     public $cep;
+
+    /**
+     * Numero do endereço do usuário
+     * @var interger
+     */
+    public $numero;
 
     /**
      * Contato do usuário
@@ -67,18 +55,29 @@ class User{
     public $cpf;
 
     /**
-     * Contato do usuário
-     * @var interger
-     */
-    public $sexo;
-
-    /**
      * Documento do usuário
      * @var interger
      */
     public $tipoConta;
 
 
+    /**
+     * Contato do usuário
+     * @var interger
+     */
+    public $sexo;
+
+    /**
+     * Login do usuário
+     * @var String
+     */
+    public $login;
+
+    /**
+     * Senha do usuário
+     * @var String
+     */
+    public $senha;
 
     /**
      * Método responsável por cadastrar a instancia atual no banco de dados
@@ -89,15 +88,15 @@ class User{
         $this->id = (new Database('users'))->insert([
             'nome'      => $this->nome,
             'email'     => $this->email,
-            'senha'     => $this->senha,
-            'login'     => $this->login,
             'endereco'  => $this->endereco,
-            'numero'    => $this->numero,
             'cep'       => $this->cep,
+            'numero'    => $this->numero,
             'telefone'  => $this->telefone,
             'cpf'       => $this->cpf,
+            'tipoConta' => $this->tipoConta,
             'sexo'      => $this->sexo,
-            'tipoConta' => $this->tipoConta
+            'login'     => $this->login,            
+            'senha'     => $this->senha
         ]);
 
         //SUCESSO
@@ -112,15 +111,15 @@ class User{
         return (new Database('users'))->update('id = '.$this->id,[
             'nome'      => $this->nome,
             'email'     => $this->email,
-            'senha'     => $this->senha,
-            'login'     => $this->login,
             'endereco'  => $this->endereco,
-            'numero'    => $this->numero,
             'cep'       => $this->cep,
+            'numero'    => $this->numero,
             'telefone'  => $this->telefone,
             'cpf'       => $this->cpf,
+            'tipoConta' => $this->tipoConta,
             'sexo'      => $this->sexo,
-            'tipoConta' => $this->tipoConta
+            'login'     => $this->login,            
+            'senha'     => $this->senha
         ]);
     }
 

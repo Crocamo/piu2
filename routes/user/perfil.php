@@ -3,7 +3,7 @@
 use \App\Http\Response;
 use \App\Controller\User;
 
-//ROTA DE CADASTRO
+//ROTA DE PERFIL
 $obRouter->get('/user/perfil', [
     'middlewares' => [
         'required-user-login'
@@ -13,7 +13,7 @@ $obRouter->get('/user/perfil', [
     }
 ]);
 
-//ROTA DE CADASTRO DE UM NOVO DEPOIMENTO (POST) 
+//ROTA DE ATUALIZAÇÃO DE PERFIL (POST) 
 $obRouter->post('/user/perfil' , [
     'middlewares' => [
         'required-user-login'
@@ -23,7 +23,7 @@ $obRouter->post('/user/perfil' , [
     }
 ]);
 
-//ROTA DE CADASTRO
+//ROTA DE PERFIL PROFISSIONAL
 $obRouter->get('/user/perfilProfissional', [
     'middlewares' => [
         'required-user-login'
@@ -32,13 +32,13 @@ $obRouter->get('/user/perfilProfissional', [
         return new Response(200, User\Perfil::getPerfilProfi($request));
     }
 ]);
-/*
-//ROTA DE CADASTRO
-$obRouter->post('/perfilProfissional', [
+
+//ROTA DE ATUALIZAÇÃO DE PERFIL PROFISSIONAL (POST) 
+$obRouter->post('/user/perfilProfissional', [
     'middlewares' => [
         'required-user-login'
     ],
     function ($request) { 
         return new Response(200, User\Perfil::setPerfilProfi($request));
     }
-]);*/
+]);

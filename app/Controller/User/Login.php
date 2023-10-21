@@ -5,7 +5,7 @@ namespace App\Controller\User;
 use \App\Utils\View;
 use \App\model\Entity\User;
 use \App\Session\User\Login as SessionUserLogin;
-use \App\model\Entity\profissional;
+use \App\model\Entity\Profissional;
 
 
 class Login extends Page

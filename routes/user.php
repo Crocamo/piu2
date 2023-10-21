@@ -11,3 +11,6 @@ include __DIR__.'/user/home.php';
 
 //INCLUI AS ROTAS DE PERFIL
 include __DIR__.'/user/perfil.php';
+
+//INCLUI AS ROTAS DE PERFIL
+include __DIR__.'/user/servicos.php';
