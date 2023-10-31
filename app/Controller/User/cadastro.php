@@ -63,34 +63,11 @@ class Cadastro extends Page
         //SERIALIZA OS DADOS        
         $cpf = self::removeSpecialCaracter($doc);
         $telefone = self::removeSpecialCaracter($tel);
-        $cep = self::removeSpecialCaracter($CEP);
 
-        //VALIDA QTD DE CARACTERES DO TELEFONE DO USUÁRIO
-        if (strlen($telefone) <= 7) {
-            $request->getRouter()->redirect('/cadastro?status=invaliLenghtTel');
-        } elseif (strlen($telefone) >= 14) {
-            $request->getRouter()->redirect('/cadastro?status=invaliLenghtTel');
-        }
-
-        //VALIDA QTD DE CARACTERES DO CPF DO USUÁRIO
-        if (strlen($cpf) != 11) {
-            if (strlen($cpf) != 14) {
-                //REDIRECIONA O USUÁRIO
-                $request->getRouter()->redirect('/cadastro?status=invaliLenghtDoc');
-            }
-        }
-
-        //VALIDA QTD DE CARACTERES DO CEP DO USUÁRIO
-        if (strlen($cep) != 8) {
-
-            if (substr($CEP, 0, 1) != substr($cep, 0, 1) && strlen($cep) == 7) {
-
-                $cep = substr($CEP, 0, 1) . $cep;
-            } else {
-                //REDIRECIONA O USUÁRIO
-                $request->getRouter()->redirect('/cadastro?status=cepLeng');
-            }
-        }
+        //VALIDA CAMPOS
+        $telefone = self::getValidaCampos('tel', $telefone, $request);
+        $cpf = self::getValidaCampos('cpf', $cpf, $request);
+        $cep = self::getValidaCampos('cep', $CEP, $request);
 
         //VALIDA O E-MAIL DO USUÁRIO
         $obUserEmail =  User::getUserByEmail($email);
@@ -162,69 +139,36 @@ class Cadastro extends Page
     {
         //POST VARS
         $postVars = $request->getPostVars();
-
-        $seg[0]   = $postVars['segIni'] ?? '';
-        $seg[1]   = $postVars['segIda'] ?? '';
-        $seg[2]   = $postVars['segVol'] ?? '';
-        $seg[3]   = $postVars['segFim'] ?? '';
-
-        $ter[0]   = $postVars['terIni'] ?? '';
-        $ter[1]   = $postVars['terIda'] ?? '';
-        $ter[2]   = $postVars['terVol'] ?? '';
-        $ter[3]   = $postVars['terFim'] ?? '';
-
-        $qua[0]   = $postVars['quaIni'] ?? '';
-        $qua[1]   = $postVars['quaIda'] ?? '';
-        $qua[2]   = $postVars['quaVol'] ?? '';
-        $qua[3]   = $postVars['quaFim'] ?? '';
-
-        $qui[0]   = $postVars['quiIni'] ?? '';
-        $qui[1]   = $postVars['quiIda'] ?? '';
-        $qui[2]   = $postVars['quiVol'] ?? '';
-        $qui[3]   = $postVars['quiFim'] ?? '';
-
-        $sex[0]   = $postVars['sexIni'] ?? '';
-        $sex[1]   = $postVars['sexIda'] ?? '';
-        $sex[2]   = $postVars['sexVol'] ?? '';
-        $sex[3]   = $postVars['sexFim'] ?? '';
-
-        $sab[0]   = $postVars['sabIni'] ?? '';
-        $sab[1]   = $postVars['sabIda'] ?? '';
-        $sab[2]   = $postVars['sabVol'] ?? '';
-        $sab[3]   = $postVars['sabFim'] ?? '';
-
-        $dom[0]   = $postVars['domIni'] ?? '';
-        $dom[1]   = $postVars['domIda'] ?? '';
-        $dom[2]   = $postVars['domVol'] ?? '';
-        $dom[3]   = $postVars['domFim'] ?? '';
-
         $funcao   = $postVars['FuncaoProfissional'] ?? '';
         $feriadoNacio  = ($postVars['feriadoNacio'] ?? '0');
         $feriadoEstad  = $postVars['feriadoEstad'] ?? '0';
+        $week = [];
 
-        $segunda = self::timeCombine($seg);
-        $terca  = self::timeCombine($ter);
-        $quarta = self::timeCombine($qua);
-        $quinta = self::timeCombine($qui);
-        $sexta  = self::timeCombine($sex);
-        $sabado = self::timeCombine($sab);
-        $domingo = self::timeCombine($dom);
+        $diap = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
+        for ($i = 0; $i < 7; $i++) {
+            $arrayDay[0]   = $postVars[$diap[$i] . 'Ini'] ?? '';
+            $arrayDay[1]   = $postVars[$diap[$i] . 'Ida'] ?? '';
+            $arrayDay[2]   = $postVars[$diap[$i] . 'Vol'] ?? '';
+            $arrayDay[3]   = $postVars[$diap[$i] . 'Fim'] ?? '';
+            $week[$i]      = self::timeCombine($arrayDay);
+        }
 
+        //RECEBE ID PARA VALIDAR PROFISSINAL
         $idUser = $_SESSION['user']['usuario']['id'];
-
         $obProfi = Profissional::getUserPById($idUser);
 
         //VALIDA SE USUARIO É PROFISSIONAL CADASTRADO
         if (!$obProfi instanceof Profissional) {
+
             //SALVA HORARIOS DE TRABALHO DO PROFISSIONAL
             $obHorario          = new Horarios;
-            $obHorario->segunda = $segunda;
-            $obHorario->terca   = $terca;
-            $obHorario->quarta  = $quarta;
-            $obHorario->quinta  = $quinta;
-            $obHorario->sexta   = $sexta;
-            $obHorario->sabado  = $sabado;
-            $obHorario->domingo = $domingo;
+            $obHorario->segunda = $week[0];
+            $obHorario->terca   = $week[1];
+            $obHorario->quarta  = $week[2];
+            $obHorario->quinta  = $week[3];
+            $obHorario->sexta   = $week[4];
+            $obHorario->sabado  = $week[5];
+            $obHorario->domingo = $week[6];
             $obHorario->feriadoEstadual  = $feriadoNacio;
             $obHorario->feriadoNacional  = $feriadoEstad;
             $obHorario->cadastrar();
@@ -235,6 +179,7 @@ class Cadastro extends Page
             $obProfi->idHorarios    = $obHorario->idHorarios;
             $obProfi->funcaoProfissional = $funcao;
             $obProfi->cadastrar();
+
             //REDIRECIONA O USUÁRIO
             $request->getRouter()->redirect('/user');
         } else {
@@ -244,17 +189,55 @@ class Cadastro extends Page
     }
 
     /**
-     * Método responsável por unificar os horarios em uma variavel diarios para armazenamento.
-     * @param Array $array
-     * @return String
+     * Método responsável por validações de campos da página de login
+     * @param Request $request
+     * @param string $errorMessage
+     * @return string
      */
-    private static function timeCombine($array)
+    private static function getValidaCampos($type, $val, $request)
     {
-        $horarios = '';
-        for ($d = 0; $d < 4; $d++) {
-            $horarios .= $array[$d] . '/$/';
+        switch ($type) {
+            case 'tel':
+                //VALIDA QTD DE CARACTERES DO TELEFONE DO USUÁRIO
+                if (strlen($val) <= 7) {
+                    $request->getRouter()->redirect('/cadastro?status=invaliLenghtTel');
+                } elseif (strlen($val) >= 14) {
+                    $request->getRouter()->redirect('/cadastro?status=invaliLenghtTel');
+                }
+                return $val;
+                break;
+
+            case 'cep':
+                $cep = self::removeSpecialCaracter($val);
+
+                //VALIDA QTD DE CARACTERES DO CEP DO USUÁRIO
+                if (strlen($val) != 8) {
+                    if (substr($cep, 0, 1) != substr($val, 0, 1) && strlen($cep) == 7) {
+                        return $cep = substr($val, 0, 1) . $cep;
+                    } else {
+                        //REDIRECIONA O USUÁRIO
+                        $request->getRouter()->redirect('/cadastro?status=cepLeng');
+                    }
+                    return $cep;
+                }
+                break;
+
+            case 'cpf':
+                //VALIDA QTD DE CARACTERES DO CPF DO USUÁRIO
+                if (strlen($val) != 11) {
+                    if (strlen($val) != 14) {
+                        //REDIRECIONA O USUÁRIO
+                        $request->getRouter()->redirect('/cadastro?status=invaliLenghtDoc');
+                    }
+                }
+                return $val;
+                break;
+
+
+            default:
+                # code...
+                break;
         }
-        return $horarios;
     }
 
     /**
@@ -281,6 +264,20 @@ class Cadastro extends Page
     }
 
     /**
+     * Método responsável por unificar os horarios em uma variavel diarios para armazenamento.
+     * @param Array $array
+     * @return String
+     */
+    private static function timeCombine($array)
+    {
+        $horarios = '';
+        for ($d = 0; $d < 4; $d++) {
+            $horarios .= $array[$d] . '/$/';
+        }
+        return $horarios;
+    }
+
+    /**
      * Método responsável por retornar a renderização do select
      * @param String $selecao
      * @return string
@@ -297,21 +294,18 @@ class Cadastro extends Page
             //for de min
             for ($m = 0; $m < 4; $m++) {
 
+                $value = $hora . $min;
+                $label = $hora . ':' . $min;
+
                 //coloca 0 na frente do numero abaixo do 10
                 if ($hora < 10) {
-                    $value = '0' . $hora . $min;
-                    $label = '0' . $hora . ':' . $min;
-                } else {
-                    $value = $hora . $min;
-                    $label = $hora . ':' . $min;
+                    $value = '0' . $value;
+                    $label = '0' . $label;
                 }
 
                 //CONTROLE DO VALOR SELECIONADO
-                if ($selecao == $value) {
-                    $selected = 'selected';
-                } else {
-                    $selected = '';
-                }
+                $selected = $selecao == $value ? 'selected' : '';
+
                 $min += 15;
 
                 if ($hora == 22) {
@@ -361,15 +355,6 @@ class Cadastro extends Page
 
         //MENSAGEM DE STATUS
         switch ($queryParams['status']) {
-            case 'created':
-                return Alert::getSuccess('Usuário criado com sucesso!');
-                break;
-            case 'updated':
-                return Alert::getSuccess('Usuário atualizado com sucesso!');
-                break;
-            case 'deleted':
-                return Alert::getSuccess('Usuário deletado com sucesso!');
-                break;
             case 'duplicated':
                 return Alert::getError('O e-mail digitado já está sendo utilizado por outro usuário!');
                 break;
@@ -387,9 +372,6 @@ class Cadastro extends Page
                 break;
             case 'invaliLenghtTel':
                 return Alert::getError('Quantidade de caracteres Invalidos do campo Telefone!');
-                break;
-            case 'workCreated':
-                return Alert::getSuccess('Conta Profissional criado com sucesso!');
                 break;
             case 'error':
                 return Alert::getSuccess('Não foi possivel criar Conta Profissional!');

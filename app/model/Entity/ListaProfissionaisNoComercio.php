@@ -71,7 +71,7 @@ class ListaProfissionaisNoComercio{
      * @return boolean
      */
     public function atualizar(){
-        return (new Database('serempresalistaprofissionaisvico'))->update('idLista = '.$this->idLista,[
+        return (new Database('empresalistaprofissionais'))->update('idLista = '.$this->idLista,[
             'idEmpresa'     => $this->idEmpresa,
             'idProfissional'=> $this->idProfissional,
             'dataInicio'    => $this->dataInicio,
@@ -95,7 +95,7 @@ class ListaProfissionaisNoComercio{
      * @return User
      */
     public static function getListProfissionalByEmprise($idEmpresa){
-        return self::getUsers('idEmpresa ='.$idEmpresa)->fetchObject(self::class);
+        return self::getListProf('idEmpresa ='.$idEmpresa)->fetchObject(self::class);
     }
 
     /**
@@ -104,7 +104,7 @@ class ListaProfissionaisNoComercio{
      * @return User
      */
     public static function getListEmprisebyProfissional($idProfissional){
-        return self::getUsers('idProfissional ="'.$idProfissional.'"')->fetchObject(self::class);
+        return self::getListProf('idProfissional ="'.$idProfissional.'"')->fetchObject(self::class);
     }
 
     /**
@@ -115,7 +115,7 @@ class ListaProfissionaisNoComercio{
      * @param string $fields
      * @return PDOStatement
      */
-    public static function getUsers($where = null, $order= null, $limit = null, $fields ='*'){
+    public static function getListProf($where = null, $order= null, $limit = null, $fields ='*'){
         return (new Database('empresalistaprofissionais'))->select($where,$order,$limit,$fields);
     }
 }

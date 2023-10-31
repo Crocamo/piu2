@@ -4,7 +4,7 @@ namespace App\model\Entity;
 
 use \App\Db\Database;
 
-class Horarios{
+class Comercio{
 
     /**
      * ID do comércio
@@ -46,7 +46,7 @@ class Horarios{
      * Site do comércio
      * @var String
      */
-    public $siteEmpresa;
+    public $siteEmpre;
 
     /**
      * documento do comércio/responsável
@@ -72,7 +72,7 @@ class Horarios{
             'nomeEmpre'     => $this->nomeEmpre,
             'telEmpre'      => $this->telEmpre,
             'numEmpre'      => $this->numEmpre,
-            'siteEmpresa'   => $this->siteEmpresa,
+            'siteEmpre'     => $this->siteEmpre,
             'cpfEmpre'      => $this->cpfEmpre,
             'idProfissional'=> $this->idProfissional
         ]);
@@ -92,7 +92,7 @@ class Horarios{
             'nomeEmpre'     => $this->nomeEmpre,
             'telEmpre'      => $this->telEmpre,
             'numEmpre'      => $this->numEmpre,
-            'siteEmpresa'   => $this->siteEmpresa,
+            'siteEmpre'     => $this->siteEmpre,
             'cpfEmpre'      => $this->cpfEmpre,
             'idProfissional'=> $this->idProfissional
         ]);
@@ -112,7 +112,25 @@ class Horarios{
      * @return User
      */
     public static function getComercioById($idEmpre){
-        return self::getHorarios('idEmpre ='.$idEmpre)->fetchObject(self::class);
+        return self::getComercios('idEmpre ='.$idEmpre)->fetchObject(self::class);
+    }
+
+    /**
+     * Método responsável por retornar uma instancia de comércio com base em seu ID
+     * @param interger $id
+     * @return User
+     */
+    public static function getComercioByName($nomeEmpre){
+        return self::getComercios('nomeEmpre ='.$nomeEmpre)->fetchObject(self::class);
+    }
+
+    /**
+     * Método responsável por retornar uma instancia de comércio com base em seu ID
+     * @param interger $id
+     * @return User
+     */
+    public static function getComercioByIdProfissional($idProfissional){
+        return self::getComercios('idProfissional ='.$idProfissional)->fetchObject(self::class);
     }
  
     /**

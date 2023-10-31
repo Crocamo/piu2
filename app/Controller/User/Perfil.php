@@ -9,54 +9,6 @@ use \App\model\Entity\Horarios;
 
 class Perfil extends Page
 {
-
-    /**
-     * Módulos disponíveis no painel
-     * @var array
-     */
-    private static $profModules = [
-        'perfil' => [
-            'label' =>  'Perfil de Usuário',
-            'link'  =>  URL . '/user/perfil'
-        ],
-        'perfilProfissional' => [
-            'label' =>  'Perfil Profissional',
-            'link'  =>  URL . '/user/perfilProfissional'
-        ],
-        'Servicos' => [
-            'label' =>  'Gerenciar Serviços',
-            'link'  =>  URL . '/user/servicos'
-        ],
-        'criarComercial' => [
-            'label' =>  'Criar Comercio!',
-            'link'  =>  URL . '/user/criarComercial'
-        ]
-    ];
-
-    /**
-     * Módulos disponíveis no painel
-     * @var array
-     */
-    private static $comecialModules = [
-        'perfil' => [
-            'label' =>  'perfil de Usuário',
-            'link'  =>  URL . '/user/perfil'
-        ],
-        'perfilProfissional' => [
-            'label' =>  'Perfil Profissional',
-            'link'  =>  URL . '/user/perfilProfissional'
-        ],
-        'Servicos' => [
-            'label' =>  'Gerenciar Serviços',
-            'link'  =>  URL . '/user/servicos'
-        ],
-        'perfilComercial' => [
-            'label' =>  'Adminstrar Comércio',
-            'link'  =>  URL . '/user/perfilProfissional'
-        ]
-    
-    ];
-
     /**
      * Método responsável por retornar a renderização da página de perfil
      * @param Request $request
@@ -83,7 +35,7 @@ class Perfil extends Page
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/perfil/index', [
             'title'     => 'Perfil de usuário',
-            'perfilLink' => self::getMenu($currentModule),
+            'perfilLink'=> parent::getSubMenu($currentModule),
             'nome'      => $obUser->nome ?? '',
             'email'     => $obUser->email ?? '',
             'login'     => $obUser->login ?? '',
@@ -248,7 +200,7 @@ class Perfil extends Page
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/perfilProfissional/index', [
             'title'     => 'Perfil Profissional',
-            'perfilLink' => self::getMenu($currentModule),
+            'perfilLink' => parent::getSubMenu($currentModule),
             'FuncaoProfissional' => $obProf->funcaoProfissional ?? '',
             'feriadoNacio'=> $est,
             'feriadoEstad'=> $nac,
@@ -415,45 +367,6 @@ class Perfil extends Page
 
         //RETORNA A RENDERIZAÇÃO DO MENU
         return  $options;
-    }
-
-    /**
-     * Método responsavel por renderizar a view do menu do perfil
-     * @param string $currentModule
-     * @return string
-     */
-    private static function getMenu($currentModule)
-    {
-        $nivel = $_SESSION['user']['usuario']['nivel'];
-
-        //LINKS DO MENU
-        $links = '';
-        switch ($nivel) {
-            case 1:
-                //ITERA OS MÓDULOS
-                foreach (self::$profModules as $hash => $module) {
-                    $links .= View::render('user/modules/perfil/menu/link', [
-                        'label'     => $module['label'],
-                        'link'      => $module['link'],
-                        'current'   => $hash == $currentModule ? 'text-danger' : ''
-                    ]);
-                }
-                break;
-            case 2:
-                foreach (self::$comecialModules as $hash => $module) {
-                    $links .= View::render('user/modules/perfil/menu/link', [
-                        'label'     => $module['label'],
-                        'link'      => $module['link'],
-                        'current'   => $hash == $currentModule ? 'text-danger' : ''
-                    ]);
-                }
-                break;
-            default:
-                $links = '';
-                break;
-        }
-        //RETORNA A RENDERIZAÇÃO DO MENU
-        return  $links;
     }
 
     /**

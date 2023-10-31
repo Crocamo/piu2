@@ -92,6 +92,17 @@ class Servicos{
     }
 
     /**
+     * Método responsável por Descartar um serviço no banco de dados
+     * @return boolean
+     */
+    public function descartar(){
+        return (new Database('servico'))->update('idServ = '.$this->idServ,[
+            'status'=> 2
+        ]);
+    }
+
+
+    /**
      * Método responsável por excluir um Serviços do banco de dados
      * @return boolean
      */

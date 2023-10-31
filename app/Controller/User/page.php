@@ -13,23 +13,15 @@ class Page
      */
     private static $userModules = [
         'home' => [
-            'label' =>  'Home',
+            'label' =>  'Página Inicial',
             'link'  =>  URL . '/user'
         ],
         'agendar' => [
             'label' =>  'Agendar serviço',
-            'link'  =>  URL . '/user/agendar'
-        ],
-        'profissionais' => [
-            'label' =>  'Profissionais preferidos',
-            'link'  =>  URL . '/user/profissionais'
-        ],
-        'comercios' => [
-            'label' =>  'Comercios preferidos',
-            'link'  =>  URL . '/user/comercios'
+            'link'  =>  URL . '/user/agendar/new'
         ],
         'perfil' => [
-            'label' =>  'perfil de usuario',
+            'label' =>  'Perfil de usuário',
             'link'  =>  URL . '/user/perfil'
         ]
     ];
@@ -40,31 +32,69 @@ class Page
      */
     private static $profModules = [
         'home' => [
-            'label' =>  'Home',
+            'label' =>  'Página Inicial',
             'link'  =>  URL . '/user'
         ],
         'agendar' => [
             'label' =>  'Agendar serviço',
-            'link'  =>  URL . '/user/agendar'
-        ],
-        'profissionais' => [
-            'label' =>  'Profissionais preferidos',
-            'link'  =>  URL . '/user/profissionais'
-        ],
-        'comercios' => [
-            'label' =>  'Comercios preferidos',
-            'link'  =>  URL . '/user/comercios'
+            'link'  =>  URL . '/user/agendar/new'
         ],
         'perfil' => [
-            'label' =>  'perfil de usuario',
+            'label' =>  'Perfil de usuário',
             'link'  =>  URL . '/user/perfil'
         ],
         'servicos' => [
-            'label' =>  'área Serviços',
+            'label' =>  'Gerenciar Serviços',
             'link'  =>  URL . '/user/servicos'
         ]
     ];
 
+     /**
+     * Módulos disponíveis no painel
+     * @var array
+     */
+    private static $subModules = [
+        'perfil' => [
+            'label' =>  'Perfil de usuário',
+            'link'  =>  URL . '/user/perfil'
+        ],
+        'perfilProfissional' => [
+            'label' =>  'Perfil Profissional',
+            'link'  =>  URL . '/user/perfilProfissional'
+        ],
+        'servicos' => [
+            'label' =>  'Gerenciar Serviços',
+            'link'  =>  URL . '/user/servicos'
+        ],
+        'comercio' => [
+            'label' =>  'Criar Comercio!',
+            'link'  =>  URL . '/user/comercio'
+        ]
+    ];
+
+    /**
+     * Módulos disponíveis no painel
+     * @var array
+     */
+    private static $empSubModules = [
+        'perfil' => [
+            'label' =>  'Perfil de usuário',
+            'link'  =>  URL . '/user/perfil'
+        ],
+        'perfilProfissional' => [
+            'label' =>  'Perfil Profissional',
+            'link'  =>  URL . '/user/perfilProfissional'
+        ],
+        'servicos' => [
+            'label' =>  'Gerenciar Serviços',
+            'link'  =>  URL . '/user/servicos'
+        ],
+        'comercio' => [
+            'label' =>  'Adminstrar Comércio',
+            'link'  =>  URL . '/user/comercio'
+        ]
+
+    ];
     /**
      * Método responsável por retornar o conteúdo (view) da estrutura genérica de página do painel
      * @param string $title
@@ -77,6 +107,42 @@ class Page
             'title' => $title,
             'content' => $content
         ]);
+    }
+
+    /**
+     * Método responsavel por renderizar a view do menu do perfil
+     * @param string $currentModule
+     * @return string
+     */
+    public static function getSubMenu($currentModule)
+    {
+        $nivel = $_SESSION['user']['usuario']['nivel'];
+
+        //LINKS DO MENU
+        $links = '';
+        switch ($nivel) {
+            case 2:
+                foreach (self::$empSubModules as $hash => $module) {
+                    $links .= View::render('user/menu/sLink', [
+                        'label'     => $module['label'],
+                        'link'      => $module['link'],
+                        'current'   => $hash == $currentModule ? 'text-danger' : ''
+                    ]);
+                }
+                break;
+            default:
+                //ITERA OS MÓDULOS
+                foreach (self::$subModules as $hash => $module) {
+                    $links .= View::render('user/menu/sLink', [
+                        'label'     => $module['label'],
+                        'link'      => $module['link'],
+                        'current'   => $hash == $currentModule ? 'text-danger' : ''
+                    ]);
+                }
+                break;
+        }
+        //RETORNA A RENDERIZAÇÃO DO MENU
+        return  $links;
     }
 
     /**

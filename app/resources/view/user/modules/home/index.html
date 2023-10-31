@@ -1,8 +1,133 @@
-<h1>Inicio</h1>
+<div class="d-flex justify-content-center">
 
-<hr>
+    <div class="card mt-3 text-dark text-center " style="width: 100%;">
+        <div class="container">
 
-<p>Seja bem-vindo(a) ao painel de login Projeto Integrador 2023.</p>
-<p>Utilize o menu superior para navegar entre os módulos disponíveis.</p>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card-header">
+                        <h1>Serviços Agendados</h1>
+                    </div>
 
-<hr>
+                    <div class="d-flex my-2" style="width: 100%;">
+                        <a href="{{URL}}/user/agendar/new"
+                            class="card text-center">
+                            <button type="button" class="btn btn-primary">Agendar
+                                Serviço</button>
+                        </a>
+                        <a href="{{URL}}/user/likeListProf"
+                            class="card text-center">
+                            <button type="button" class="btn btn-primary">Cadastrar
+                                Profissional</button>
+                        </a>
+                        <a href="{{URL}}/user/likeListEmp"
+                            class="card text-center">
+                            <button type="button" class="btn btn-primary">Cadastrar
+                                Comércio</button>
+                        </a>
+                    </div>
+
+                    <hr>
+                    {{status}}
+
+                    <table class="table table-light table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Nome do Serviço</th>
+                                <th>Data Agendada</th>
+                                <th>Valor Aproximado</th>
+                                <th>Profissional</th>
+                                <th>Local</th>
+                                <th>Status</th>
+                                <th style="width: 250px;">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {{itensAgendados}}
+                        </tbody>
+                    </table>
+                    {{AgendaPagination}}
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-5">
+                    <div class="card-header">
+                        <h3>Profissionais preferidos</h3>
+                    </div>
+
+                    <table class="table table-light table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">Profissional</th>
+                                <th style="width: 100px;">Função</th>
+                                <th style="width: 200px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{itensProf}}
+                        </tbody>
+
+                    </table>
+                    {{ProfPagination}}
+                    <hr>
+                </div>
+
+                <div class="col-sm-7">
+                    <div class="card-header">
+                        <h3>Locais preferidos</h3>
+                    </div>
+
+                    <table class="table table-light table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Comércio</th>
+                                <th style="width: 200px;">Endereço</th>
+                                <th style="width: 200px;">WebSite</th>
+                                <th style="width: 250px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{itensEmpre}}
+                        </tbody>
+                    </table>
+                    {{EmprePagination}}
+                    <hr>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card-header">
+                        <h3>Serviços Finalizados</h3>
+                    </div>
+
+                    <hr>
+
+                    <table class="table table-light table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Nome do Serviço</th>
+                                <th>Data Agendada</th>
+                                <th>Valor Aproximado</th>
+                                <th>Profissional</th>
+                                <th>Local</th>
+                                <th>Status</th>
+                                <th style="width: 400px;">Motivo</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {{itensFinalizados}}
+                        </tbody>
+                    </table>
+                    {{concluidoPagination}}
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
