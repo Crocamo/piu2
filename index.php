@@ -15,7 +15,22 @@ $obRouter->run()
          ->sendResponse();
 
 /*
-    echo "<pre>";      
-    print_r($);      
-    echo "</pre>";exit;         
+   echo '<pre>';
+   print_r($);
+   echo '</pre>'; exit;    
+
+
+
+   tipo de conta, perfil user, 
+prefiro nao dizer perfil user,
+regex, perfil user
+controle melhorado de horarios.
+mascara, gerenciar serviço/ cadastrar serviço/editar serviço
+botão remover do editar trocar para reativar serviço descartado
+botao agendar serviço, home
+bota remover profissional
+
+botão agendar agendar
+corrigir tabela Agendar
+rotas e controler api 
  */

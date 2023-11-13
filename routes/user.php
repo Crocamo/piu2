@@ -17,3 +17,6 @@ include __DIR__.'/user/servicos.php';
 
 //INCLUI AS ROTAS DE COMERCIO
 include __DIR__.'/user/comercio.php';
+
+//INCLUI AS ROTAS DE AGENDA
+include __DIR__.'/user/agenda.php';

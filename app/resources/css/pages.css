@@ -20,3 +20,28 @@
     color: #fff;
 }
 fim exemplos*/
+
+table.calendary {
+  width: 200px;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table.calendary th, td {
+  padding: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+table.calendary th {
+  background-color: #f2f2f2;
+}
+
+table.calendary td {
+  cursor: pointer;
+}
+
+.today {
+  background-color: #4CAF50;
+  color: white;
+}

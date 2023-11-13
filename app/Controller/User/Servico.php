@@ -50,8 +50,8 @@ class Servico extends Page
                 'valorServ'         => $obServico->valorServ, //ATENÇÃO CRIAR FUNÇÃO
                 'statusValue'       => self::getStatusValue($obServico->status),
                 'dataInicioServ'    => date('d/m/Y h:i:s', strtotime($obServico->dataInicioServ)),
-                'estado'            => $obServico->status>=2 ? 'disabled':'',
-            ]);//**ATENÇÃO CRIAR CONTROLE BOTÃO EDITAR */
+                'estado'            => $obServico->status >= 2 ? 'disabled' : '',
+            ]); //**ATENÇÃO CRIAR CONTROLE BOTÃO EDITAR */
         }
         return $itens;
     }
@@ -62,16 +62,14 @@ class Servico extends Page
      */
     public static function getServicos($request)
     {
+        //RECEBE O MODULO DO MENU DE PERFIL DA URL
+        $url = $request->getRouter()->getUri();
+        $xUri = explode('/', $url);
+        $currentModule = end($xUri);
 
-         //RECEBE O MODULO DO MENU DE PERFIL DA URL
-         $url = $request->getRouter()->getUri();
-         $xUri = explode('/', $url);
-         $currentModule = end($xUri);
-         
         //CONTEÚDO DA PÁGINA DE NOVO SERVIÇO
         $content = View::render('user/modules/services/index', [
             'title'      => 'Área de Administração de Serviço',
-            'perfilLink' => parent::getSubMenu($currentModule),
             'itens'      => self::getServicosItens($request, $obPagination),
             'pagination' => parent::getPagination($request, $obPagination),
             'status'     => self::getStatus($request)
@@ -93,7 +91,7 @@ class Servico extends Page
         $content = View::render('user/modules/services/form', [
             'title'         => 'Cadastrar Serviço',
             'nomeServ'      => '',
-            'tempoMedioServ'=> self::getTempoMedioServ('0130'),
+            'tempoMedioServ' => self::getTempoMedioServ('0130'),
             'valorServ'     => '',
             'statusValue'   => '',
             'optionStatus'  => self::getSelect(0),
@@ -154,7 +152,7 @@ class Servico extends Page
         if (!$obServ instanceof Servicos) {
             $request->getRouter()->redirect('/user/servicos');
         }
-        if($obServ->status>=2){
+        if ($obServ->status >= 2) {
             $request->getRouter()->redirect('/user/servicos?status=discart');
         }
 
@@ -216,7 +214,7 @@ class Servico extends Page
         //VALIDA A INSTANCIA
         if (!$obServ instanceof Servicos) {
             $request->getRouter()->redirect('/user/servicos');
-        } 
+        }
         //CONTEÚDO DO FORMULÁRIO
         $content = View::render('user/modules/services/delete', [
             'nomeServ'      => $obServ->nomeServ
@@ -232,7 +230,7 @@ class Servico extends Page
      * @param interger $id
      * @return string
      */
-     public static function setRemoveService($request, $id)
+    public static function setRemoveService($request, $id)
     { //ATENÇÃO NÃO EXCLUIR SERVIÇO. ALTERAR PARA DESATIVADO.
         // OBTÉM O DEPOIMENTO DO BANCO DE DADOS
         $obServ = Servicos::getServiceById($id);
@@ -241,7 +239,7 @@ class Servico extends Page
         if (!$obServ instanceof Servicos) {
             $request->getRouter()->redirect('/user/servicos');
         }
-        
+
         $obServ->descartar();
 
         //REDIRECIONA O USUÁRIO
@@ -296,7 +294,7 @@ class Servico extends Page
         //RETORNA A RENDERIZAÇÃO DO MENU
         return  $options;
     }
-    
+
     /**
      * Método responsável por retornar o o select do formulario de cadastro de Serviços
      * @param String $selecao
@@ -388,6 +386,9 @@ class Servico extends Page
         switch ($queryParams['status']) {
             case 'discart':
                 return Alert::getError('Serviço descartado!');
+                break;
+            case 'RequirePermission':
+                return Alert::getSuccess('Requer conta Profissional para acessar');
                 break;
         }
     }

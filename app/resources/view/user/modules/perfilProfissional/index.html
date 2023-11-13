@@ -5,15 +5,13 @@
         <div class="card-header">
             <h1>{{title}}</h1>
         </div>
-        <div class="form-group">
-            {{perfilLink}}
-        </div>
+        
         <div class="card-body">
 
             {{status}}
             
             <form method="post">
-
+                        <!--ATENÇÃO  CRIAR APELIDO-->
                 <div class="form-group">
                     <label>Função Profissional</label>
                     <input type="text" name="FuncaoProfissional" class="form-control" placeholder="Ex: Cabeleireiro" value="{{FuncaoProfissional}}" required autofocus>
@@ -35,7 +33,7 @@
 
                         <div class="form-check col feriadoEstad">
                             <input class="form-check-input" type="checkbox" name="feriadoEstad" value="1" id="feriadoEstad" {{feriadoEstad}}>
-                            <label class="form-check-label" for="defaultCheck1">Feriado Nacional</label>
+                            <label class="form-check-label" for="defaultCheck1">Feriado Estadual</label>
                         </div>
                     </div>
                 </div>

@@ -68,7 +68,7 @@ class Profissional{
     }
 
      /**
-     * Método responsável por retornar um profissional com base em seu e-mail
+     * Método responsável por retornar um profissional com base em seu ID de usuario
      * @param interger $id
      * @return User
      */
@@ -77,7 +77,7 @@ class Profissional{
     }
 
     /**
-     * Método responsável por retornar um profissional com base em seu ID
+     * Método responsável por retornar um profissional com base em seu ID Profissional
      * @param interger $id
      * @return User
      */

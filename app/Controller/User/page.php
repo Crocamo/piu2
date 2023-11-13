@@ -18,7 +18,7 @@ class Page
         ],
         'agendar' => [
             'label' =>  'Agendar serviço',
-            'link'  =>  URL . '/user/agendar/new'
+            'link'  =>  URL . '/user/agendar//new'
         ],
         'perfil' => [
             'label' =>  'Perfil de usuário',
@@ -37,23 +37,8 @@ class Page
         ],
         'agendar' => [
             'label' =>  'Agendar serviço',
-            'link'  =>  URL . '/user/agendar/new'
+            'link'  =>  URL . '/user/agendar//new'
         ],
-        'perfil' => [
-            'label' =>  'Perfil de usuário',
-            'link'  =>  URL . '/user/perfil'
-        ],
-        'servicos' => [
-            'label' =>  'Gerenciar Serviços',
-            'link'  =>  URL . '/user/servicos'
-        ]
-    ];
-
-     /**
-     * Módulos disponíveis no painel
-     * @var array
-     */
-    private static $subModules = [
         'perfil' => [
             'label' =>  'Perfil de usuário',
             'link'  =>  URL . '/user/perfil'
@@ -65,10 +50,6 @@ class Page
         'servicos' => [
             'label' =>  'Gerenciar Serviços',
             'link'  =>  URL . '/user/servicos'
-        ],
-        'comercio' => [
-            'label' =>  'Criar Comercio!',
-            'link'  =>  URL . '/user/comercio'
         ]
     ];
 
@@ -76,7 +57,15 @@ class Page
      * Módulos disponíveis no painel
      * @var array
      */
-    private static $empSubModules = [
+    private static $empModules = [
+        'home' => [
+            'label' =>  'Página Inicial',
+            'link'  =>  URL . '/user'
+        ],
+        'agendar' => [
+            'label' =>  'Agendar serviço',
+            'link'  =>  URL . '/user/agendar//new'
+        ],
         'perfil' => [
             'label' =>  'Perfil de usuário',
             'link'  =>  URL . '/user/perfil'
@@ -93,8 +82,8 @@ class Page
             'label' =>  'Adminstrar Comércio',
             'link'  =>  URL . '/user/comercio'
         ]
-
     ];
+
     /**
      * Método responsável por retornar o conteúdo (view) da estrutura genérica de página do painel
      * @param string $title
@@ -152,27 +141,39 @@ class Page
      */
     private static function getMenu($currentModule)
     {
-        $nivel=$_SESSION['user']['usuario']['nivel'];
-        //LINKS DO MENU
+        $nivel = $_SESSION['user']['usuario']['nivel'];
         $links = '';
-        if ($nivel!=0) {
-            //ITERA OS MÓDULOS
-        foreach (self::$profModules as $hash => $module) {
-            $links .= View::render('user/menu/link', [
-                'label'     => $module['label'],
-                'link'      => $module['link'],
-                'current'   => $hash == $currentModule ? 'text-danger' : ''
-            ]);
-        }
-        }else{
-            //ITERA OS MÓDULOS
-        foreach (self::$userModules as $hash => $module) {
-            $links .= View::render('user/menu/link', [
-                'label'     => $module['label'],
-                'link'      => $module['link'],
-                'current'   => $hash == $currentModule ? 'text-danger' : ''
-            ]);
-        }
+        switch ($nivel) {
+            case 2:
+                //ITERA OS MÓDULOS
+                foreach (self::$empModules as $hash => $module) {
+                    $links .= View::render('user/menu/link', [
+                        'label'     => $module['label'],
+                        'link'      => $module['link'],
+                        'current'   => $hash == $currentModule ? 'text-danger' : ''
+                    ]);
+                }
+                break;
+            case 1:
+                //ITERA OS MÓDULOS
+                foreach (self::$profModules as $hash => $module) {
+                    $links .= View::render('user/menu/link', [
+                        'label'     => $module['label'],
+                        'link'      => $module['link'],
+                        'current'   => $hash == $currentModule ? 'text-danger' : ''
+                    ]);
+                }
+                break;
+            default:
+                //ITERA OS MÓDULOS
+                foreach (self::$userModules as $hash => $module) {
+                    $links .= View::render('user/menu/link', [
+                        'label'     => $module['label'],
+                        'link'      => $module['link'],
+                        'current'   => $hash == $currentModule ? 'text-danger' : ''
+                    ]);
+                }
+                break;
         }
 
         //RETORNA A RENDERIZAÇÃO DO MENU

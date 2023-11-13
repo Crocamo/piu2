@@ -35,7 +35,6 @@ class Perfil extends Page
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/perfil/index', [
             'title'     => 'Perfil de usuário',
-            'perfilLink'=> parent::getSubMenu($currentModule),
             'nome'      => $obUser->nome ?? '',
             'email'     => $obUser->email ?? '',
             'login'     => $obUser->login ?? '',
@@ -50,7 +49,7 @@ class Perfil extends Page
             'novaSenha'     => '************',
             'senhaConfirm'  => '************',
             'status'        => self::getStatus($request),
-            
+
         ]);
 
         //RETORNA A PÁGINA COMPLETA
@@ -141,11 +140,11 @@ class Perfil extends Page
                     //REDIRECIONA O USUÁRIO
                     $request->getRouter()->redirect('/user/perfil?status=noEqualsPass');
                 } else {
-                    $obUser->senha= password_hash($novaSenha, PASSWORD_DEFAULT);
+                    $obUser->senha = password_hash($novaSenha, PASSWORD_DEFAULT);
                 }
             }
         }
-         //ATUALIZA A INSTANCIA 
+        //ATUALIZA A INSTANCIA 
         $obUser->nome       = $nome;
         $obUser->email      = $email;
         $obUser->login      = $login;
@@ -158,7 +157,7 @@ class Perfil extends Page
         $obUser->sexo       = $sexo;
         $obUser->senha      = $obUser->senha;
         $obUser->atualizar();
-        
+
         //REDIRECIONA O USUÁRIO
         $request->getRouter()->redirect('/user/perfil?status=updated');
     }
@@ -175,23 +174,19 @@ class Perfil extends Page
         $id = $_SESSION['user']['usuario']['id'];
 
         // OBTÉM O USUÁRIOS DO BANCO DE DADOS
-        $obUser = User::getUserById($id);
 
-        //VALIDA A INSTANCIA
-        if (!$obUser instanceof User) {
-            $request->getRouter()->redirect('/');
-        }
-        $obProf = Profissional::getUserPById($id);
-        if(!$obProf instanceof profissional){
-            //REDIRECIONA O USUÁRIO PARA O CADASTRO DE PROFISSIONAL
-            $request->getRouter()->redirect('/cadastroProfissional');
-        }
+        $obValido = self::validaInstancia($id, "user");
+        $obProf = $obValido ? $obValido : $request->getRouter()->redirect('/');
 
-        $idHorario=$obProf->idHorarios;
+        $obValido = self::validaInstancia($id, "prof");
+        $obProf = $obValido ? $obValido : $request->getRouter()->redirect('/cadastroProfissional');
+
+
+        $idHorario = $obProf->idHorarios;
         $obHorario = Horarios::getTBHorariosById($idHorario);
-        $est=$obHorario->feriadoEstadual ? 'checked':'';
-        $nac=$obHorario->feriadoNacional ? 'checked':'';
-        
+        $est = $obHorario->feriadoEstadual ? 'checked' : '';
+        $nac = $obHorario->feriadoNacional ? 'checked' : '';
+
         //RECEBE O MODULO DO MENU DA URL
         $url = $request->getRouter()->getUri();
         $xUri = explode('/', $url);
@@ -200,10 +195,9 @@ class Perfil extends Page
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/perfilProfissional/index', [
             'title'     => 'Perfil Profissional',
-            'perfilLink' => parent::getSubMenu($currentModule),
             'FuncaoProfissional' => $obProf->funcaoProfissional ?? '',
-            'feriadoNacio'=> $est,
-            'feriadoEstad'=> $nac,
+            'feriadoNacio' => $est,
+            'feriadoEstad' => $nac,
             'horarios' => self::getTBHorarios($idHorario),
             'status'        => self::getStatus($request),
         ]);
@@ -220,46 +214,42 @@ class Perfil extends Page
     public static function setPerfilProfi($request)
     {
         //**ATENÇÃO CRIAR CONTROLE DE HORARIOS COMPLICADO ALGUEM VOLTAR DO ALMOÇO ANTES DE INICIAR O EXPEDIENTE */
-        
+
         //POST VARS
         $postVars = $request->getPostVars();
 
         //RECEBE ID DO USUARIO LOGADO
         $id = $_SESSION['user']['usuario']['id'];
 
-        $obProf = Profissional::getUserPById($id);
-        if(!$obProf instanceof profissional){
-            //REDIRECIONA O USUÁRIO PARA O CADASTRO DE PROFISSIONAL
-            $request->getRouter()->redirect('/cadastroProfissional');
-        }
+        $obValido = self::validaInstancia($id, "prof");
+        $obProf = $obValido ? $obValido : $request->getRouter()->redirect('/cadastroProfissional');
 
-        $idHorario=$obProf->idHorarios;
+        $idHorario = $obProf->idHorarios;
         $obHorario = Horarios::getTBHorariosById($idHorario);
 
         $dia = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
         $diap = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
-        
-        for ($i = 0; $i < 7; $i++) 
-        {
-            $week=$dia[$i];
-            $day=$obHorario->$week;
+
+        for ($i = 0; $i < 7; $i++) {
+            $week = $dia[$i];
+            $day = $obHorario->$week;
             $hour = explode('/$/', $day);
-            
-            $Ini=$hour[0];
-            $ida=$hour[1];
-            $vol=$hour[2];
-            $fim=$hour[3];
 
-            $hr[0]   = $postVars[$diap[$i].'Ini'] ?? $Ini;
-            $hr[1]   = $postVars[$diap[$i].'Ida'] ?? $ida;
-            $hr[2]   = $postVars[$diap[$i].'Vol'] ?? $vol;
-            $hr[3]   = $postVars[$diap[$i].'Fim'] ?? $fim;
-            $semana[$i]= self::timeCombine($hr);
+            $Ini = $hour[0];
+            $ida = $hour[1];
+            $vol = $hour[2];
+            $fim = $hour[3];
 
-            $obHorario->$week=$semana[$i];
+            $hr[0]   = $postVars[$diap[$i] . 'Ini'] ?? $Ini;
+            $hr[1]   = $postVars[$diap[$i] . 'Ida'] ?? $ida;
+            $hr[2]   = $postVars[$diap[$i] . 'Vol'] ?? $vol;
+            $hr[3]   = $postVars[$diap[$i] . 'Fim'] ?? $fim;
+            $semana[$i] = self::timeCombine($hr);
+
+            $obHorario->$week = $semana[$i];
         }
         $obProf->funcaoProfissional = $postVars['FuncaoProfissional'] ?? $obProf->funcaoProfissional;
-        
+
         $feriadoNacio  = $postVars['feriadoNacio'] ?? '0';
         $feriadoEstad  = $postVars['feriadoEstad'] ?? '0';
         $obHorario->feriadoEstadual  = $feriadoNacio;
@@ -287,19 +277,19 @@ class Perfil extends Page
     private static function getTBHorarios($id)
     {
 
-        $obHorario= Horarios::getTBHorariosById($id);
+        $obHorario = Horarios::getTBHorariosById($id);
         $dias = '';
         $dia = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
         $diap = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
-        
+
         for ($i = 0; $i < 7; $i++) {
-            $week=$dia[$i];
-            $day=$obHorario->$week;
+            $week = $dia[$i];
+            $day = $obHorario->$week;
             $hour = explode('/$/', $day);
-            $Ini=$hour[0];
-            $ida=$hour[1];
-            $vol=$hour[2];
-            $fim=$hour[3];
+            $Ini = $hour[0];
+            $ida = $hour[1];
+            $vol = $hour[2];
+            $fim = $hour[3];
 
             $dias .= View::render('user/modules/perfilProfissional/box', [
                 'dia'       => $dia[$i],
@@ -377,6 +367,64 @@ class Perfil extends Page
     private static function removeSpecialCaracter($numero)
     {
         return preg_replace('/[^0-9]/', '', $numero);
+    }
+
+    /**
+     * Método responsável por validar instancia do DB baseado no ID do usuario Logado.
+     * @param Request $request
+     * @param interger $id
+     * @return Array de objeto ou false
+     */
+    private static function validaInstancia($id, $instancia)
+    {
+
+        switch ($instancia) {
+
+            case 'user':
+
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obUser = User::getUserById($id);
+
+                //VALIDA A INSTANCIA
+                if (!$obUser instanceof User) {
+                    return false;
+                }
+                return $obUser;
+
+            case 'prof':
+
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obProf = Profissional::getUserPById($id);
+                //VALIDA A INSTANCIA PROFISSIONAL
+                if (!$obProf instanceof profissional) {
+                    return false;
+                }
+                return $obProf;
+
+            case 'emp':
+
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obEmpre = EntityComercio::getComercioByIdProfissional($obProf->idProfissional);
+                //VALIDA A INSTANCIA COMERCIAL
+                if (!$obEmpre instanceof EntityComercio) {
+                    return false;
+                }
+                return $obEmpre;
+
+            case 'nome':
+
+                //RECEBE DADOS DE USUÁRIO DO PROFISSIONAL
+                $obUser = User::getUserByLogin($nome['nome']);
+
+                if (!$obUser instanceof User) {
+                    return false;
+                }
+                return $obUser;
+
+            default:
+                # code...
+                break;
+        }
     }
 
     /**

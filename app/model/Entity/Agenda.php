@@ -4,7 +4,7 @@ namespace App\model\Entity;
 
 use \App\Db\Database;
 
-class Profissional{
+class Agenda{
 
     /**
      * ID da agenda
@@ -112,7 +112,7 @@ class Profissional{
      * @return User
      */
     public static function getAgendaPById($idAgenda){
-        return self::getUsers('idAgenda ='.$idAgenda)->fetchObject(self::class);
+        return self::getAgendas('idAgenda ='.$idAgenda)->fetchObject(self::class);
     }
  
     /**
@@ -123,7 +123,7 @@ class Profissional{
      * @param string $fields
      * @return PDOStatement
      */
-    public static function getUsers($where = null, $order= null, $limit = null, $fields ='*'){
+    public static function getAgendas($where = null, $order= null, $limit = null, $fields ='*'){
         return (new Database('tbagenda'))->select($where,$order,$limit,$fields);
     }
 }

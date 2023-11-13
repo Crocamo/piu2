@@ -1,65 +1,22 @@
 <div class="d-flex justify-content-center">
+    <div class="card mt-3 text-dark text-center " style="width: 100%;">
+        <div class="container">
+            <div class="card-header">
+                <h1>{{title}}</h1>
+            </div>
 
-   <!-- <div class="card mt-3 text-dark text-center " style="width: 100%;">
+            {{status}}
 
-        <div class="card-header">
-            <h1>{{title}}</h1>
-        </div>
+            {{boxS}}
 
-        <hr>
-
-        <a href="{{URL}}/user">
-            <button type="button" class="btn btn-warning">Voltar</button>
-        </a>
-
-        <hr>
-
-        {{status}}
-
-        <form method="post">
-            <div class="row my-1">
-
-                <div class="form-group col">
-                    <label>Filtrar por profissional preferido</label>
-                    <select class="form-control" id="nomeProf" name="nomeProf">
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                    </select>
-                </div>
-
-                <div class="form-group col">
-                    <label>Filtrar por Comércio preferido</label>
-                    <select class="form-control" id="nomeEmpre" name="nomeEmpre">
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                    </select>
-                </div>
-
-                <div class="form-group col">
-                    <label>Filtrar por serviço</label>
-                    <select class="form-control" id="nomeServ" name="nomeServ">
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                        <option value="{{value}}" name="{{name}}" {{selected}}>{{label}}</option>
-                    </select>
-                </div>-->
-
-                <div class="form-group col">
-                    <label>Filtrar por data</label>
-                    <input type="date" id="dataEvento">
-                </div>
-
-            <!--</div>-->
+            {{Agenda}}
 
             <div class="row my-1">
                 <div class="detalhes-evento" id="detalhesEvento">
                     <!-- Detalhes do evento serão exibidos aqui -->
                 </div>
             </div>
-<!--
-        </form>
-        
-    </div>--><script src="{{URL}}/app/resources/js/script.js"></script>
+
+        </div><script src="{{URL}}/app/resources/js/script.js"></script>
+    </div>
 </div>

@@ -13,56 +13,60 @@ use \App\Utils\Pagination;
 class Comercio extends Page
 {
 
-     /**
+    /**
      * Método responsável por obter a renderização dos itens de Serviços para a página
      * @param Request $request
      * @param Pagination $obPagination
      * @return string
      */
-    private static function getItensProf($request, &$profPagination)
+    private static function getItensProf($request, $obEmpre, &$profPagination)
     {
         //DEPOIMENTOS
         $itens = '';
 
-         //RECEBE ID DO USUARIO LOGADO
-         $id = $_SESSION['user']['usuario']['id'];
-    
-         $valido = self::validaInstancia($id, "emp");
+        $EmpreId = $obEmpre->idEmpre;
 
-         $obLista = EntityLista::getListProfissionalByEmprise($valido->idEmpre);
-         //VALIDA A INSTANCIA
-        if (!$obLista instanceof EntityLista) {
-            $obLista='';
-
-        }
-
-       
-/*
         //QUANTIDADE TOTAL DE REGISTROS
-        $quantidadetotal = ProfListUser::getUsers('idUser ="' . $obUser->id . '"', null, null, 'COUNT(*) as qtd')->fetchObject()->qtd;
+        $quantidadetotal = EntityLista::getListProf('idEmpresa ="' . $EmpreId . '"', null, null, 'COUNT(*) as qtd')->fetchObject()->qtd;
 
         //PÁGINA ATUAL
         $queryParams = $request->getQueryParams();
         $paginaAtual = $queryParams['page'] ?? 1;
 
         //INSTANCIA DE PAGINAÇÃO
-        $obPaginationProf = new Pagination($quantidadetotal, $paginaAtual, 10);
+        $profPagination = new Pagination($quantidadetotal, $paginaAtual, 10);
 
         //RESULTADOS DA PÁGINA
-        $results = ProfListUser::getUsers('idUser ="' . $obUser->id . '"', 'idUser DESC', $obPaginationProf->getLimit());
+        $results = EntityLista::getListProf('idEmpresa ="' . $EmpreId . '"', 'funcao DESC', $profPagination->getLimit());
 
         //RENDERIZA O ITEM
-        while ($obProfList = $results->fetchObject(ProfListUser::class)) {
-            $obProf = Profissional::getProfissionalById($obProfList->idProf);
-            $obProfName = User::getUserById($obProf->idUser);
+        while ($obProfList = $results->fetchObject(EntityLista::class)) {
+            //VALIDA A INSTANCIA PROFISSIONAL
+            $obProf = Profissional::getProfissionalById($obProfList->idProfissional);
+            $obProfUser = user::getUserById($obProf->idUser);
 
-            $itens .= View::render('user/modules/home/LikeList/itensProf', [
-                'Profissional'  => $obProfName->nome,
-                'Funcao'        => $obProf->funcaoProfissional
-            ]);
-        }*/
+            $itens .= View::render('user/modules/comercio/itensProfissionais', [
+                'nomeProf'    => $obProfUser->nome,
+                'dataEntrada' => date('d/m/Y h:i:s', strtotime($obProfList->dataInicio)),
+                'dataSaida'   => $obProfList->dataFim,
+                'funcao'      => $obProfList->funcao ?? '',
+                'statusProf'  => $obProfList->status >= 1 ? 'Ativo' : 'Inativo' //,
+                // 'Motivo'    => $obProfList->motivo>=1 ??'',
+            ]); //**ATENÇÃO CRIAR CONTROLE BOTÃO EDITAR */
+        }
         return $itens;
     }
+
+    private static function  getTabPrefProf($request, $obEmpre)
+    {
+        $itens = View::render('user/modules/comercio/tabelaPrefProf', [
+            'itensProfissionais'   =>  self::getItensProf($request, $obEmpre, $profPagination),
+            'profPagination'       =>  parent::getPagination($request, $profPagination)
+        ]);
+
+        return $itens;
+    }
+
 
     /**
      * Método responsável por retornar a renderização da página de perfil
@@ -74,20 +78,26 @@ class Comercio extends Page
     {
         //RECEBE ID DO USUARIO LOGADO
         $id = $_SESSION['user']['usuario']['id'];
-    
-        $valido = self::validaInstancia($id, "emp");
+        $obValidoU = self::validaInstancia($id, "user");
 
-        $obEmpre = $valido ? $valido : '';
+        $obUser = $obValidoU->tipoConta == 0 ? $request->getRouter()->redirect('/user/?status=RequirePermission'):$obValidoU;
+
+        $obValidoP = self::validaInstancia($id, "prof");
+        $obValido = self::validaInstancia($obValidoP->idProfissional, "emp");
+        $obEmpre = $obValido ? $obValido : '';
 
         //RECEBE O MODULO DO MENU DE PERFIL DA URL
         $url = $request->getRouter()->getUri();
         $xUri = explode('/', $url);
         $currentModule = end($xUri);
 
+        $tabelaPrefProf = '';
+        $obEmpre != NULL || $obEmpre != '' ? $tabelaPrefProf = self::getTabPrefProf($request, $obEmpre) : '';
+
+
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/comercio/index', [
             'title'     => 'Perfil Comercial',
-            'perfilLink' => parent::getSubMenu($currentModule),
             'enderecoEmpre' => $obEmpre->enderecoEmpre ?? '',
             'cepEmpre'      => $obEmpre->cepEmpre   ?? '',
             'nomeEmpre'     => $obEmpre->nomeEmpre  ?? '',
@@ -96,8 +106,7 @@ class Comercio extends Page
             'siteEmpresa'   => $obEmpre->siteEmpre  ?? '',
             'cpfEmpre'      => $obEmpre->cpfEmpre   ?? '',
 
-            'itensProfissionais'   =>'',// self::getItensProf($request, $profPagination),
-            'profPagination'       => '',//parent::getPagination($request, $profPagination),
+            'tabelaPrefProf' => $tabelaPrefProf,
             'status'        => self::getStatus($request)
         ]);
 
@@ -135,17 +144,18 @@ class Comercio extends Page
 
         //RECEBE ID DO USUARIO LOGADO
         $id = $_SESSION['user']['usuario']['id'];
-        
+
         //VALIDA INSTANCIAS
         $obUser = self::validaInstancia($id, "user");
         $obProf = self::validaInstancia($id, "prof");
-        $valido = self::validaInstancia($id, "emp");
+        $valido = self::validaInstancia($obProf->idProfissional, "emp");
         $obEmpre = $valido ? $valido : '';
-        
+
         if ($obEmpre == '') {
+
             //ATUALIZA INSTANCIA DE USUÁRIO
-            $obUser->tipoConta=2;
-            $obuser->atualizar();
+            $obUser->tipoConta = 2;
+            $obUser->atualizar();
 
             //CRIA INSTANCIA COMERCIAL
             $obEmpre          = new EntityComercio;
@@ -157,8 +167,10 @@ class Comercio extends Page
             $obEmpre->telEmpre       = $telEmpre;
             $obEmpre->cpfEmpre       = $cpfEmpre;
             $obEmpre->idProfissional = $obProf->idProfissional;
+
             $obEmpre->cadastrar();
         } else {
+
             //ATUALIZA A INSTANCIA 
             $obEmpre->nomeEmpre      = $nomeEmpre;
             $obEmpre->enderecoEmpre  = $enderecoEmpre;
@@ -167,8 +179,8 @@ class Comercio extends Page
             $obEmpre->siteEmpre      = $siteEmpre;
             $obEmpre->telEmpre       = $telEmpre;
             $obEmpre->cpfEmpre       = $cpfEmpre;
-            $obEmpre->atualizar();
 
+            $obEmpre->atualizar();
         }
 
         //REDIRECIONA O USUÁRIO
@@ -183,6 +195,17 @@ class Comercio extends Page
      */
     public static function getProfList($request, $errorMessage = null)
     {
+
+        //CONTEÚDO DA PÁGINA DE LOGIN
+        $content = View::render('user/modules/comercio/LikeList/index', [
+            'title'  => 'Adicionar Profissional',
+            'empProf' => 'Profissional',
+            'nome'   => 'nome',
+            'status' => self::getStatus($request),
+        ]);
+
+        //RETORNA A PÁGINA COMPLETA
+        return parent::getPainel('home > PIUnivesp', $content, 'comercio');
     }
 
     /**
@@ -191,9 +214,58 @@ class Comercio extends Page
      * @param interger $id
      * @return string
      */
-    public static function ProfList($request)
-    {
+    public static function SetProfList($request)
+    { {
+            //RECEBE ID DO USUARIO LOGADO
+            $id = $_SESSION['user']['usuario']['id'];
+            $obValidoP = self::validaInstancia($id, "prof");
+            $obValido = self::validaInstancia($obValidoP->idProfissional, "emp");
+            $obEmpre = $obValido ? $obValido : '';
+            $obEmpreId = $obEmpre->idEmpre;
 
+            //POST VARS
+            $nomeProf = $request->getPostVars();
+
+            //RECEBE DADOS DE USUÁRIO DO PROFISSIONAL
+            $obValido = self::validaInstancia($nomeProf['nome'], "nome");
+            $TempProf = $obValido ? $obValido : $request->getRouter()->redirect('/user/addProfList?status=Invalid');
+
+            //RECEBE DADOS DO PROFISSIONAL
+
+            $obValido = self::validaInstancia($TempProf->id, "prof");
+            $obProf = $obValido ? $obValido : '';
+
+
+            //QUANTIDADE TOTAL DE REGISTROS
+            $quantidadetotal = EntityLista::getListProf('idEmpresa ="' . $obEmpreId . '"', null, null, 'COUNT(*) as qtd')->fetchObject()->qtd;
+
+            //PÁGINA ATUAL
+            $queryParams = $request->getQueryParams();
+            $paginaAtual = $queryParams['page'] ?? 1;
+
+            //INSTANCIA DE PAGINAÇÃO
+            $obPaginationProf = new Pagination($quantidadetotal, $paginaAtual, 10);
+
+            //RESULTADOS DA PÁGINA
+            $results = EntityLista::getListProf('idEmpresa ="' . $obEmpreId . '" AND idProfissional="' . $obProf->idProfissional . '"', null, $obPaginationProf->getLimit());
+            $obProfDuplicated = $results->fetchObject(EntityLista::class);
+
+            if ($obProfDuplicated instanceof EntityLista) {
+                //REDIRECIONA O USUÁRIO PARA O CADASTRO DE PROFISSIONAL
+                $request->getRouter()->redirect('/user/likeListProf?status=duplicated');
+            }
+
+            //SALVA HORARIOS DE TRABALHO DO PROFISSIONAL
+            $obProfList                 = new EntityLista;
+            $obProfList->idEmpresa      = $obEmpreId;
+            $obProfList->idProfissional = $obProf->idProfissional;
+            $obProfList->dataFim        = '';
+            $obProfList->funcao         = $obProf->funcaoProfissional;
+            $obProfList->status         = 1;
+
+            $obProfList->cadastrar();
+            $request->getRouter()->redirect('/user/likeListProf?status=success');
+        }
     }
 
     /**
@@ -204,9 +276,9 @@ class Comercio extends Page
      */
     private static function getValidaCampos($type, $val, $request)
     {
-     if($val== ''|| $val==NULL) {
-        return '';
-     }  
+        if ($val == '' || $val == NULL) {
+            return '';
+        }
         switch ($type) {
             case 'tel':
                 //VALIDA QTD DE CARACTERES DO TELEFONE DO USUÁRIO
@@ -219,7 +291,7 @@ class Comercio extends Page
                 break;
 
             case 'cep':
-                
+
                 $cep = self::removeSpecialCaracter($val);
 
                 //VALIDA QTD DE CARACTERES DO CEP DO USUÁRIO
@@ -270,36 +342,54 @@ class Comercio extends Page
      */
     private static function validaInstancia($id, $instancia)
     {
-        // OBTÉM O USUÁRIOS DO BANCO DE DADOS
-        $obUser = User::getUserById($id);
 
-        //VALIDA A INSTANCIA
-        if (!$obUser instanceof User) {
-            return false;
-        }
+        switch ($instancia) {
 
-        if ($instancia == 'user') {
-            return $obUser;
-        }
+            case 'user':
 
-        //VALIDA A INSTANCIA PROFISSIONAL
-        $obProf = Profissional::getUserPById($id);
-        if (!$obProf instanceof profissional) {
-            return false;
-        }
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obUser = User::getUserById($id);
 
-        if ($instancia == 'prof') {
-            return $obProf;
-        }
+                //VALIDA A INSTANCIA
+                if (!$obUser instanceof User) {
+                    return false;
+                }
+                return $obUser;
 
-        $obEmpre = EntityComercio::getComercioByIdProfissional($obProf->idProfissional);
+            case 'prof':
 
-        if (!$obEmpre instanceof EntityComercio) {
-            return false;
-        }
-        if ($instancia == 'emp') {
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obProf = Profissional::getUserPById($id);
+                //VALIDA A INSTANCIA PROFISSIONAL
+                if (!$obProf instanceof profissional) {
+                    return false;
+                }
+                return $obProf;
 
-            return $obEmpre;
+            case 'emp':
+
+                // OBTÉM O USUÁRIOS DO BANCO DE DADOS
+                $obEmpre = EntityComercio::getComercioByIdProfissional($id);
+
+                //VALIDA A INSTANCIA COMERCIAL
+                if (!$obEmpre instanceof EntityComercio) {
+                    return false;
+                }
+                return $obEmpre;
+
+            case 'nome':
+
+                //RECEBE DADOS DE USUÁRIO DO PROFISSIONAL
+                $obUser = User::getUserByLogin($id);
+
+                if (!$obUser instanceof User) {
+                    return false;
+                }
+                return $obUser;
+
+            default:
+                # code...
+                break;
         }
     }
 
@@ -327,6 +417,22 @@ class Comercio extends Page
             case 'invaliLenghtTel':
                 return Alert::getError('Quantidade de caracteres Invalidos do campo Telefone!');
                 break;
+            case 'Invalid':
+                return Alert::getSuccess('Nome de profissional não existe!');
+                break;
+            case 'InvalidAccount':
+                return Alert::getSuccess('Precisa Ser um Profissional para acessar a página Comercial!');
+                break;
+            case 'success':
+                return Alert::getSuccess('Cadastrado com sucesso!');
+                break;
+            case 'duplicated':
+                return Alert::getSuccess('Este Profissional ja está cadastrado!');
+                break;
+                case 'RequirePermission':
+                    return Alert::getSuccess('Requer conta Profissional para acessar');
+                    break;
+
         }
     }
 }

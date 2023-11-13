@@ -52,6 +52,7 @@ class ListaProfissionaisNoComercio{
      * @return boolean
      */
     public function cadastrar(){
+        $this->dataInicio = date('Y-m-d H:i:s');
         //INSERE A INSTANCIA NO BANCO
         $this->idLista = (new Database('empresalistaprofissionais'))->insert([
             'idEmpresa'     => $this->idEmpresa,
