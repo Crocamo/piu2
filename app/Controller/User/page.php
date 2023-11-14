@@ -99,42 +99,6 @@ class Page
     }
 
     /**
-     * Método responsavel por renderizar a view do menu do perfil
-     * @param string $currentModule
-     * @return string
-     */
-    public static function getSubMenu($currentModule)
-    {
-        $nivel = $_SESSION['user']['usuario']['nivel'];
-
-        //LINKS DO MENU
-        $links = '';
-        switch ($nivel) {
-            case 2:
-                foreach (self::$empSubModules as $hash => $module) {
-                    $links .= View::render('user/menu/sLink', [
-                        'label'     => $module['label'],
-                        'link'      => $module['link'],
-                        'current'   => $hash == $currentModule ? 'text-danger' : ''
-                    ]);
-                }
-                break;
-            default:
-                //ITERA OS MÓDULOS
-                foreach (self::$subModules as $hash => $module) {
-                    $links .= View::render('user/menu/sLink', [
-                        'label'     => $module['label'],
-                        'link'      => $module['link'],
-                        'current'   => $hash == $currentModule ? 'text-danger' : ''
-                    ]);
-                }
-                break;
-        }
-        //RETORNA A RENDERIZAÇÃO DO MENU
-        return  $links;
-    }
-
-    /**
      * Método responsavel por renderizar a view do menu do painel
      * @param string $currentModule
      * @return string

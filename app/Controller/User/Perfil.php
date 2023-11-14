@@ -187,23 +187,34 @@ class Perfil extends Page
         $est = $obHorario->feriadoEstadual ? 'checked' : '';
         $nac = $obHorario->feriadoNacional ? 'checked' : '';
 
-        //RECEBE O MODULO DO MENU DA URL
-        $url = $request->getRouter()->getUri();
-        $xUri = explode('/', $url);
-        $currentModule = end($xUri);
+        $day = $obHorario->semana;
+        $dia = explode(',', $day);
+        $hour = $obHorario->horario;
+        $hora = explode('/$/', $hour);
 
         //CONTEÚDO DA PÁGINA DE LOGIN
         $content = View::render('user/modules/perfilProfissional/index', [
-            'title'     => 'Perfil Profissional',
+            'title'         => 'Perfil Profissional',
             'FuncaoProfissional' => $obProf->funcaoProfissional ?? '',
-            'feriadoNacio' => $est,
-            'feriadoEstad' => $nac,
-            'horarios' => self::getTBHorarios($idHorario),
-            'status'        => self::getStatus($request),
+            'seg'           => $dia[0] != 0 ? 'checked' : '',
+            'ter'           => $dia[1] != 0 ? 'checked' : '',
+            'qua'           => $dia[2] != 0 ? 'checked' : '',
+            'qui'           => $dia[3] != 0 ? 'checked' : '',
+            'sex'           => $dia[4] != 0 ? 'checked' : '',
+            'sab'           => $dia[5] != 0 ? 'checked' : '',
+            'dom'           => $dia[6] != 0 ? 'checked' : '',
+            'optionIni' => self::getSelect($hora[0],  'Ini'),
+            'optionIda' => self::getSelect($hora[1],  'Ida'),
+            'optionVol' => self::getSelect($hora[2],  'Vol'),
+            'optionFim' => self::getSelect($hora[3],  'Fim'),
+            'feriadoNacio'  => $est,
+            'feriadoEstad'  => $nac,
+            //'horarios'      => //self::getTBHorarios($idHorario),
+            'status'        => self::getStatus($request)
         ]);
 
         //RETORNA A PÁGINA COMPLETA
-        return parent::getPainel('Perfil > Univesp', $content, 'perfil');
+        return parent::getPainel('Perfil > Univesp', $content, 'perfilProfissional');
     }
 
     /**
@@ -226,28 +237,42 @@ class Perfil extends Page
 
         $idHorario = $obProf->idHorarios;
         $obHorario = Horarios::getTBHorariosById($idHorario);
+        $horario = $obHorario->horario;
+        $horas = explode('/$/', $horario);
 
-        $dia = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
-        $diap = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
 
-        for ($i = 0; $i < 7; $i++) {
-            $week = $dia[$i];
-            $day = $obHorario->$week;
-            $hour = explode('/$/', $day);
+        $Ini = $horas[0];
+        $ida = $horas[1];
+        $vol = $horas[2];
+        $fim = $horas[3];
 
-            $Ini = $hour[0];
-            $ida = $hour[1];
-            $vol = $hour[2];
-            $fim = $hour[3];
+        $hr[0]   = $postVars['Ini'] ?? $Ini;
+        $hr[1]   = $postVars['Ida'] ?? $ida;
+        $hr[2]   = $postVars['Vol'] ?? $vol;
+        $hr[3]   = $postVars['Fim'] ?? $fim;
 
-            $hr[0]   = $postVars[$diap[$i] . 'Ini'] ?? $Ini;
-            $hr[1]   = $postVars[$diap[$i] . 'Ida'] ?? $ida;
-            $hr[2]   = $postVars[$diap[$i] . 'Vol'] ?? $vol;
-            $hr[3]   = $postVars[$diap[$i] . 'Fim'] ?? $fim;
-            $semana[$i] = self::timeCombine($hr);
-
-            $obHorario->$week = $semana[$i];
+        for ($h = 1; $h < count($hr); $h++) {
+            if ($hr[$h] < $hr[$h - 1]) {
+                //REDIRECIONA O USUÁRIO PARA O CADASTRO DE PROFISSIONAL
+                $request->getRouter()->redirect('/user/perfilProfissional?status=InvalidDateTime');
+            }
         }
+
+
+        $semana = $obHorario->semana;
+        $dias = explode('/$/', $semana);
+
+        $week[0] = $postVars['seg'] ?? $dias[0];
+        $week[1] = $postVars['ter'] ?? $dias[1];
+        $week[2] = $postVars['qua'] ?? $dias[2];
+        $week[3] = $postVars['qui'] ?? $dias[3];
+        $week[4] = $postVars['sex'] ?? $dias[4];
+        $week[5] = $postVars['sab'] ?? $dias[5];
+        $week[6] = $postVars['dom'] ?? $dias[6];
+
+        $obHorario->semana = self::dayCombine($week);
+        $obHorario->horario = self::timeCombine($hr);
+
         $obProf->funcaoProfissional = $postVars['FuncaoProfissional'] ?? $obProf->funcaoProfissional;
 
         $feriadoNacio  = $postVars['feriadoNacio'] ?? '0';
@@ -256,6 +281,7 @@ class Perfil extends Page
         $obHorario->feriadoNacional  = $feriadoEstad;
         $obHorario->atualizar();
         $obProf->atualizar();
+
         //REDIRECIONA O USUÁRIO PARA O CADASTRO DE PROFISSIONAL
         $request->getRouter()->redirect('/user/perfilProfissional?status=updated');
     }
@@ -264,9 +290,26 @@ class Perfil extends Page
     {
         $horarios = '';
         for ($d = 0; $d < 4; $d++) {
-            $horarios .= $array[$d] . '/$/';
+            if ($d != 3) {
+                $horarios .= $array[$d] . '/$/';
+            } else {
+                $horarios .= $array[$d];
+            }
         }
         return $horarios;
+    }
+
+    private static function dayCombine($array)
+    {
+        $days = '';
+        for ($d = 0; $d < 7; $d++) {
+            if ($d != 6) {
+                $days .= $array[$d] . ',';
+            } else {
+                $days .= $array[$d];
+            }
+        }
+        return $days;
     }
 
     /**
@@ -278,11 +321,12 @@ class Perfil extends Page
     {
 
         $obHorario = Horarios::getTBHorariosById($id);
+
         $dias = '';
         $dia = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
         $diap = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'];
 
-        for ($i = 0; $i < 7; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             $week = $dia[$i];
             $day = $obHorario->$week;
             $hour = explode('/$/', $day);
@@ -292,8 +336,6 @@ class Perfil extends Page
             $fim = $hour[3];
 
             $dias .= View::render('user/modules/perfilProfissional/box', [
-                'dia'       => $dia[$i],
-                'diaP'      => $diap[$i],
                 'optionIni' => self::getSelect($Ini, $diap[$i] . 'Ini'),
                 'optionIda' => self::getSelect($ida, $diap[$i] . 'Ida'),
                 'optionVol' => self::getSelect($vol, $diap[$i] . 'Vol'),
@@ -309,7 +351,7 @@ class Perfil extends Page
      * @param String $selecao
      * @return string
      */
-    private static function getSelect($selecao, $nome)
+    private static function getSelect($selecao)
     {
         $options = '';
         $hora = 8;
@@ -480,6 +522,9 @@ class Perfil extends Page
                 break;
             case 'error':
                 return Alert::getSuccess('Não foi possivel criar Conta Profissional!');
+                break;
+            case 'InvalidDateTime':
+                return Alert::getSuccess('Horarios incompativeis!');
                 break;
         }
     }

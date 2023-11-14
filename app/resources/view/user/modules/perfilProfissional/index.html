@@ -18,25 +18,85 @@
                         
                 </div>
 
-                <div class="form-group my-2">
-                    <label>Horarios de atendimento</label>
-                    {{horarios}}
-                </div>
-
-                <div class="form-group my-2">
-                    <div class="row Feriados">
-                        <label>Trabalha em Feriados? Marcar campos se positivo</label>
-                        <div class="form-check col feriadoNacio">
-                            <input class="form-check-input" type="checkbox" name="feriadoNacio" value="1" id="feriadoNacio" {{feriadoNacio}}>
-                            <label class="form-check-label" for="defaultCheck1">Feriado Nacional</label>
+                <div class="form-group my-3">
+                    <div class="row  my-1"></br>
+                        <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Horario de Atendimento</label>
+                        <div class="col">
+                            <label>hora inicial</label>
+                            <select class="form-control" id="Ini" name="Ini">
+                                {{optionIni}}
+                            </select>
                         </div>
-
-                        <div class="form-check col feriadoEstad">
-                            <input class="form-check-input" type="checkbox" name="feriadoEstad" value="1" id="feriadoEstad" {{feriadoEstad}}>
-                            <label class="form-check-label" for="defaultCheck1">Feriado Estadual</label>
+                        <div class="col">
+                            <label>Almoço:ida</label>
+                            <select class="form-control" id="Ida" name="Ida">
+                                {{optionIda}}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>Almoço:Volta</label>
+                            <select class="form-control" id="Vol" name="Vol"> 
+                                {{optionVol}}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>hora final</label>
+                            <select class="form-control" id="Fim" name="Fim">
+                                {{optionFim}}
+                            </select>
                         </div>
                     </div>
+
+                    <div class="row my-3">
+
+                        </br>
+                        <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Dias da semana</label>
+                        <div class="col">
+                            <label>Seg:</label>
+                            <input class="form-check-input" type="checkbox" name="seg" value="1" id="seg" {{seg}}>
+                        </div>
+                        <div class="col">
+                            <label>Ter:</label>
+                            <input class="form-check-input" type="checkbox" name="ter" value="1" id="ter" {{ter}}>
+                        </div>
+                        <div class="col">
+                            <label>Qua:</label>
+                            <input class="form-check-input" type="checkbox" name="qua" value="1" id="qua" {{qua}}>
+                        </div>
+                        <div class="col">
+                            <label>Qui:</label>
+                            <input class="form-check-input" type="checkbox" name="qui" value="1" id="qui" {{qui}}>
+                        </div>
+                        <div class="col">
+                            <label>Sex:</label>
+                            <input class="form-check-input" type="checkbox" name="sex" value="1" id="sex" {{sex}}>
+                        </div>
+                        <div class="col">
+                            <label>Sab:</label>
+                            <input class="form-check-input" type="checkbox" name="sab" value="1" id="sab" {{sab}}>
+                        </div>
+                        <div class="col">
+                            <label>Dom:</label>
+                            <input class="form-check-input" type="checkbox" name="dom" value="1" id="dom" {{dom}}>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+
+                    </br>
+                    <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Trabalha em Feriados? Marcar campos se positivo</label>
+                    <div class="col">
+                        <label>Feriado Nacional:</label>
+                        <input class="form-check-input" type="checkbox" name="feriadoNacio" value="1" id="feriadoNacio" {{feriadoNacio}}>
+                    </div>
+                    <div class="col">
+                        <label>Feriado Estadual</label>
+                        <input class="form-check-input" type="checkbox" name="feriadoEstad" value="1" id="feriadoEstad" {{feriadoEstad}}>
+                    </div>
                 </div>
+                </div>
+
+                
+
                 <button type="submit" class="btn btn-lg btn-danger">Salvar</button>
 
             </form>

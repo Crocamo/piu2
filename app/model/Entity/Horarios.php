@@ -13,46 +13,16 @@ class Horarios{
     public $idHorarios;
 
     /**
-     * horarios de Segunda feira
+     * horarios
      * @var String
      */
-    public $segunda;
+    public $horario;
 
     /**
-     * horarios de Terça feira
+     * semanas
      * @var String
      */
-    public $terca;
-
-    /**
-     * horarios de Quarta feira
-     * @var String
-     */
-    public $quarta;
-
-    /**
-     * horarios de Quinta feira
-     * @var String
-     */
-    public $quinta;
-
-    /**
-     * horarios de Sexta feira
-     * @var String
-     */
-    public $sexta;
-
-    /**
-     * horarios de sabado
-     * @var String
-     */
-    public $sabado;
-
-    /**
-     * horarios de Domingo
-     * @var String
-     */
-    public $domingo;
+    public $semana;
 
     /**
      * feriadoEstadual
@@ -73,15 +43,10 @@ class Horarios{
     public function cadastrar(){
         //INSERE A INSTANCIA NO BANCO
         $this->idHorarios = (new Database('tbhorarios'))->insert([
-            'segunda'   => $this->segunda,
-            'terca'     => $this->terca,
-            'quarta'    => $this->quarta,
-            'quinta'    => $this->quinta,
-            'sexta'     => $this->sexta,
-            'sabado'    => $this->sabado,
-            'domingo'   => $this->domingo,
+            'horario'           => $this->horario,
+            'semana'            => $this->semana,
             'feriadoEstadual'   => $this->feriadoEstadual,
-            'feriadoNacional'  => $this->feriadoNacional
+            'feriadoNacional'   => $this->feriadoNacional
         ]);
 
         //SUCESSO
@@ -94,15 +59,10 @@ class Horarios{
      */
     public function atualizar(){
         return (new Database('tbhorarios'))->update('idHorarios = '.$this->idHorarios,[
-            'segunda'   => $this->segunda,
-            'terca'     => $this->terca,
-            'quarta'    => $this->quarta,
-            'quinta'    => $this->quinta,
-            'sexta'     => $this->sexta,
-            'sabado'    => $this->sabado,
-            'domingo'   => $this->domingo,
+            'horario'           => $this->horario,
+            'semana'            => $this->semana,
             'feriadoEstadual'   => $this->feriadoEstadual,
-            'feriadoNacional'  => $this->feriadoNacional
+            'feriadoNacional'   => $this->feriadoNacional
         ]);
     }
 
