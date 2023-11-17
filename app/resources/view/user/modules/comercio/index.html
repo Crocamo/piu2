@@ -12,51 +12,58 @@
 
             <form method="post">
 
-                <div class="form-group my-3">
-                    <label>Nome do Comercio</label>
+                <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>Nome do Comercio</label></div>
+                <div class="form-group my-2">
+
                     <input type="text" name="nomeEmpre" class="form-control"
                         placeholder="Nome do Comercio!" value="{{nomeEmpre}}"
                         required autofocus>
                 </div>
 
-                <div class="form-group">
-                    <label>Endereço Comercial</label>
+                <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>Endereço Comercial </label></div>
+                <div class="form-group my-2">
+
                     <input type="text" name="enderecoEmpre" class="form-control"
                         placeholder="Nome da Rua!" value="{{enderecoEmpre}}"
                         required>
                 </div>
 
+                
                 <div class="row">
-                    <div class="col form-group my-3">
-                        <label>Numero</label>
+                    <div class="col form-group my-2">
+                        <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>Numero</label> </div>
                         <input type="number" class="form-control"
                             name="numEmpre" value="{{numEmpre}}" required>
                     </div>
 
-                    <div class="col form-group my-3">
-                        <label>CEP</label>
+                    
+                    <div class="col form-group my-2">
+                        <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>CEP</label> </div>
                         <input type="text" name="cepEmpre" class="form-control"
                             placeholder="CEP do estabelecimento"
                             value="{{cepEmpre}}" required>
                     </div>
                 </div>
 
+                <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>Site</label> </div>
                 <div class="form-group my-2">
-                    <label>Site</label>
+                    
                     <input type="text" class="form-control" name="siteEmpresa"
                         placeholder="seuComercio.com" value="{{siteEmpresa}}">
                 </div>
 
                 <div class="row">
                     <div class="col form-group my-3">
-                        <label>Telefone</label>
+                        <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>Telefone</label> </div>
+                        
                         <input type="text" name="telEmpre" class="form-control"
                             placeholder="Telefone Comercial!"
                             value="{{telEmpre}}">
                     </div>
 
                     <div class="col form-group my-3">
-                        <label>CPF/CNPJ</label>
+                        <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 10px;font-weight: bolder;"><label>CPF/CNPJ</label> </div>
+                        
                         <input type="text" name="cpfEmpre" class="form-control"
                             placeholder="CNPJ ou CPF!" value="{{cpfEmpre}}">
                     </div>

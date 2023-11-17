@@ -24,11 +24,41 @@ $obRouter->post('/user/agendar/{disponibilidade}/new', [
 ]);
 
 //ROTA DE EDIÇÃO DE UM SERVIÇO 
-$obRouter->get('/user/servicos/{id}/edit' , [
+$obRouter->get('/user/agendar/{disponibilidade}/Confirm' , [
     'middlewares' => [
         'required-user-login'
     ],
-    function ($request,$id) {
-        return new Response(200,User\Servico::getEditService($request,$id));
+    function ($request,$disponibilidade) {
+        return new Response(200, User\Agendar::getConfirmService($request,$disponibilidade));
+    }
+]);
+
+//ROTA DE EDIÇÃO DE UM SERVIÇO 
+$obRouter->post('/user/agendar/{disponibilidade}/Confirm' , [
+    'middlewares' => [
+        'required-user-login'
+    ],
+    function ($request,$disponibilidade) {
+        return new Response(200, User\Agendar::setConfirmService($request,$disponibilidade));
+    }
+]);
+
+//ROTA DE EDIÇÃO DE UM SERVIÇO 
+$obRouter->get('/user/agendar/{disponibilidade}/edit' , [
+    'middlewares' => [
+        'required-user-login'
+    ],
+    function ($request,$disponibilidade) {
+        return new Response(200, User\Agendar::getEditService($request,$disponibilidade));
+    }
+]);
+
+//ROTA DE EDIÇÃO DE UM SERVIÇO 
+$obRouter->post('/user/agendar/{disponibilidade}/edit' , [
+    'middlewares' => [
+        'required-user-login'
+    ],
+    function ($request,$disponibilidade) {
+        return new Response(200, User\Agendar::setEditService($request,$disponibilidade));
     }
 ]);

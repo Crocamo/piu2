@@ -115,6 +115,7 @@ class Agenda{
         return self::getAgendas('idAgenda ='.$idAgenda)->fetchObject(self::class);
     }
  
+    
     /**
      * Método responsavel por retornar agendamento
      * @param string $where

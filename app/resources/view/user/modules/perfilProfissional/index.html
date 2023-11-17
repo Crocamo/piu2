@@ -13,14 +13,15 @@
             <form method="post">
                         <!--ATENÇÃO  CRIAR APELIDO-->
                 <div class="form-group">
-                    <label>Função Profissional</label>
+                    <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;"><label >Função Profissional</label></div>
+                    
                     <input type="text" name="FuncaoProfissional" class="form-control" placeholder="Ex: Cabeleireiro" value="{{FuncaoProfissional}}" required autofocus>
                         
                 </div>
 
                 <div class="form-group my-3">
+                    <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;"><label>Horario de Atendimento</label></div>
                     <div class="row  my-1"></br>
-                        <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Horario de Atendimento</label>
                         <div class="col">
                             <label>hora inicial</label>
                             <select class="form-control" id="Ini" name="Ini">
@@ -46,11 +47,9 @@
                             </select>
                         </div>
                     </div>
-
+                    </br>
+                    <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;"><label >Dias da semana</label></div>
                     <div class="row my-3">
-
-                        </br>
-                        <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Dias da semana</label>
                         <div class="col">
                             <label>Seg:</label>
                             <input class="form-check-input" type="checkbox" name="seg" value="1" id="seg" {{seg}}>
@@ -80,10 +79,12 @@
                             <input class="form-check-input" type="checkbox" name="dom" value="1" id="dom" {{dom}}>
                         </div>
                     </div>
+                
+                </br>
+                    <div style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;"><label >Trabalha em Feriados? Marcar campos se positivo</label></div>
+                    
                     <div class="row my-3">
 
-                    </br>
-                    <label style="background-color: rgb(19, 15, 252); color: white; border-radius: 15px;font-weight: bolder;">Trabalha em Feriados? Marcar campos se positivo</label>
                     <div class="col">
                         <label>Feriado Nacional:</label>
                         <input class="form-check-input" type="checkbox" name="feriadoNacio" value="1" id="feriadoNacio" {{feriadoNacio}}>

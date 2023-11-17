@@ -50,18 +50,24 @@ class Home extends Page
 
         //RENDERIZA O ITEM
         while ($agenda = $results->fetchObject(Agenda::class)) {
+             
             if ($agenda->status == 1) {
+                
                 $obProf = Profissional::getProfissionalById($agenda->idProfissional);
-                $obProfUser = User::getUserById($obProf->idUser);
-                $obServico = Servicos::getServiceById($agenda->idProfissional);
+                $idProfUser=$obProf->idUser;
 
+                $obProfUser = User::getUserById($idProfUser);
+
+                $obServico = Servicos::getServiceByProfissional($agenda->idProfissional);
+  
                 $itens .= View::render('user/modules/home/LikeList/itensAgendados', [
                     'nomeServ'      => $obServico->nomeServ,
                     'dataAgenda'    => $agenda->agendaData,
                     'agendaHora'    => $agenda->agendaHora,
                     'valorServ'     => $obServico->valorServ,
                     'profissional'  => $obProfUser->nome,
-                    'statusAgenda'  => 'ativo'
+                    'statusAgenda'  => 'ativo',
+                    'id'            =>$agenda->idAgenda
                 ]);
             }
         }

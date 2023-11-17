@@ -258,19 +258,16 @@ class Perfil extends Page
             }
         }
 
-
-        $semana = $obHorario->semana;
-        $dias = explode('/$/', $semana);
-
-        $week[0] = $postVars['seg'] ?? $dias[0];
-        $week[1] = $postVars['ter'] ?? $dias[1];
-        $week[2] = $postVars['qua'] ?? $dias[2];
-        $week[3] = $postVars['qui'] ?? $dias[3];
-        $week[4] = $postVars['sex'] ?? $dias[4];
-        $week[5] = $postVars['sab'] ?? $dias[5];
-        $week[6] = $postVars['dom'] ?? $dias[6];
+        $week[0] = $postVars['seg'] ?? 0;
+        $week[1] = $postVars['ter'] ?? 0;
+        $week[2] = $postVars['qua'] ?? 0;
+        $week[3] = $postVars['qui'] ?? 0;
+        $week[4] = $postVars['sex'] ?? 0;
+        $week[5] = $postVars['sab'] ?? 0;
+        $week[6] = $postVars['dom'] ?? 0;
 
         $obHorario->semana = self::dayCombine($week);
+
         $obHorario->horario = self::timeCombine($hr);
 
         $obProf->funcaoProfissional = $postVars['FuncaoProfissional'] ?? $obProf->funcaoProfissional;
